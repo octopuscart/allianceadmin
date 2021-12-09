@@ -64,19 +64,65 @@ class ProductManager extends CI_Controller {
 
         if (isset($_POST['submit'])) {
             if ($_POST['submit'] == 'Add Category') {
+                if (!empty($_FILES['picture']['name'])) {
+
+                    $config['upload_path'] = 'assets/media';
+                    $config['allowed_types'] = '*';
+                    $temp1 = rand(100, 1000000);
+
+                    $ext1 = explode('.', $_FILES['picture']['name']);
+                    $ext = strtolower(end($ext1));
+                    $file_newname = $temp1 . "1." . $ext;
+                    $config['file_name'] = $file_newname;
+                    //Load upload library and initialize configuration
+                    $this->load->library('upload', $config);
+                    $this->upload->initialize($config);
+                    if ($this->upload->do_upload('picture')) {
+                        $uploadData = $this->upload->data();
+                        $picture = $uploadData['file_name'];
+                    } else {
+                        $picture = '';
+                    }
+                } else {
+                    $picture = '';
+                }
                 $category_array = array(
                     'category_name' => $this->input->post('category_name'),
                     'description' => $this->input->post('description'),
                     'parent_id' => $this->input->post('parent_id'),
-                    'image' => $this->input->post('image')
+                    'image' => $picture
                 );
                 $this->db->insert('category', $category_array);
             }
             if ($_POST['submit'] == 'Edit') {
+                if (!empty($_FILES['picture']['name'])) {
+
+                    $config['upload_path'] = 'assets/media';
+                    $config['allowed_types'] = '*';
+                    $temp1 = rand(100, 1000000);
+
+                    $ext1 = explode('.', $_FILES['picture']['name']);
+                    $ext = strtolower(end($ext1));
+                    $file_newname = $temp1 . "1." . $ext;
+                    $config['file_name'] = $file_newname;
+                    //Load upload library and initialize configuration
+                    $this->load->library('upload', $config);
+                    $this->upload->initialize($config);
+                    if ($this->upload->do_upload('picture')) {
+                        $uploadData = $this->upload->data();
+                        $picture = $uploadData['file_name'];
+                    } else {
+                        $picture = '';
+                    }
+                } else {
+                    $picture = '';
+                }
                 echo $id = $this->input->post('parent_id');
                 $this->db->set('category_name', $this->input->post('category_name'));
                 $this->db->set('description', $this->input->post('description'));
-                $this->db->set('image', $this->input->post('image'));
+                if ($picture) {
+                    $this->db->set('image', $picture);
+                }
                 $this->db->where('id', $id);
                 $this->db->update('category');
             }
@@ -271,6 +317,80 @@ class ProductManager extends CI_Controller {
         $this->load->view('productManager/create_attribute', $data);
     }
 
+    function createSerialNo($product_id = 0) {
+        $product_model = $this->Product_model;
+        $data['product_model'] = $product_model;
+
+        $isproduct = false;
+        $productobj = array();
+
+        $productstocklist = [];
+
+        $message = "";
+
+        if ($product_id) {
+            $this->db->where("id", $product_id);
+            $query = $this->db->get('products');
+            $productobj = $query->row_array();
+
+            $imageurl = base_url() . "assets/default/default.png";
+            if ($productobj) {
+                if ($productobj['file_name']) {
+                    $imageurl = base_url() . "assets/product_images/" . $productobj['file_name'];
+                }
+                $isproduct = true;
+
+                $this->db->where("product_id", $product_id);
+                $query = $this->db->get('product_stock');
+                $productstocklisttemp = $query->result_array();
+                foreach ($productstocklisttemp as $key => $value) {
+                    $this->db->where("stock_id", $value["id"]);
+                    $this->db->or_where("serial_no", $value["serial_no"]);
+                    $query = $this->db->get('product_rewards');
+                    $serial_objcheck = $query->row_array();
+                    if ($serial_objcheck) {
+                        
+                    } else {
+                        array_push($productstocklist, $value);
+                    }
+                }
+            }
+            $productobj['file_name'] = $imageurl;
+            $data['productobj'] = $productobj;
+        }
+        $data['productstocklist'] = $productstocklist;
+
+        $data['isproduct'] = $isproduct;
+
+        if (isset($_POST['submit'])) {
+            $product_stock_array = array(
+                'serial_no' => $this->input->post('serial_no'),
+                'product_id' => $product_id,
+                'status' => 'credit',
+                'stock_date' => date("Y-m-d"),
+            );
+
+            $this->db->where("serial_no", $this->input->post('serial_no'));
+            $query = $this->db->get('product_stock');
+            $productstocklist = $query->result_array();
+            if ($productstocklist) {
+                $message = "Please check serial No., this is already in stock.";
+            } else {
+                $this->db->insert('product_stock', $product_stock_array);
+                redirect('ProductManager/createSerialNo/' . $product_id);
+            }
+        }
+
+        if (isset($_POST["submitstock"])) {
+            $this->db->where("id", $this->input->post('stock_id'));
+            $query = $this->db->delete('product_stock');
+            redirect('ProductManager/createSerialNo/' . $product_id);
+        }
+
+        $data['message'] = $message;
+        $this->load->view('productManager/productStock', $data);
+    }
+
     //end of attribute 
 //
 //Add product function
@@ -311,15 +431,17 @@ class ProductManager extends CI_Controller {
             }
             $user_id = $this->session->userdata('logged_in')['login_id'];
             $post_data = array(
+                'sku' => $this->input->post('sku'),
                 'title' => $this->input->post('title'),
                 'category_id' => $this->input->post('category_name'),
-                'short_description' => $this->input->post('short_description'),
+                'short_description' => "",
                 'description' => $this->input->post('description'),
-                'regular_price' => $this->input->post('regular_price'),
-                'sale_price' => $this->input->post('sale_price'),
+                'regular_price' => $this->input->post('price'),
+                'sale_price' => "0",
                 'price' => $this->input->post('price'),
                 'file_name' => $file_newname,
-                'offer' => $this->input->post('offer'),
+                'credit_limit' => $this->input->post('credit_limit'),
+                'offer' => "",
                 'file_name1' => "",
                 'file_name2' => "",
                 'status' => 1,
@@ -330,7 +452,7 @@ class ProductManager extends CI_Controller {
             $this->db->insert('products', $post_data);
             $last_id = $this->db->insert_id();
 
-            if (autosku) {
+            if (AUTOSKU) {
                 $sku = SKU_PREFIX . $user_id . $last_id;
                 $this->db->set('sku', $sku);
                 $this->db->where('id', $last_id); //set column_name and value in which row need to update
@@ -352,12 +474,6 @@ class ProductManager extends CI_Controller {
     function edit_product($product_id) {
         $product_model = $this->Product_model;
         $data['product_model'] = $product_model;
-        $data['product_attributes'] = $product_model->product_attribute_list($product_id);
-
-        $data['attributefunction'] = $product_model;
-
-        $data['product_detail_attrs'] = $product_model->productAttributes($product_id);
-
 
 
         $this->db->select('*');
@@ -482,6 +598,7 @@ class ProductManager extends CI_Controller {
 
 
             $post_data = array(
+                'sku' => $this->input->post('sku'),
                 'title' => $this->input->post('title'),
                 'category_id' => $this->input->post('category_name'),
                 'short_description' => $this->input->post('short_description'),
@@ -490,6 +607,7 @@ class ProductManager extends CI_Controller {
                 'sale_price' => $this->input->post('sale_price'),
                 'price' => $this->input->post('price'),
                 'offer' => $this->input->post('offer'),
+                'credit_limit' => $this->input->post('credit_limit'),
                 'status' => 1,
                 'stock_status' => $this->input->post('stock_status')
             );
@@ -635,12 +753,14 @@ class ProductManager extends CI_Controller {
             $temparray['image'] = "<img src='$imageurl' style='height:51px;'>";
             $temparray['sku'] = $pvalue['sku'];
             $temparray['title'] = $pvalue['title'];
+            $temparray['credit_limit'] = $pvalue['credit_limit'];
             $temparray['short_description'] = $pvalue['short_description'];
             $catarray = $this->Product_model->parent_get($pvalue['category_id']);
             $temparray['category'] = $catarray['category_string'];
             $temparray['items_prices'] = $pvalue['price'];
             $temparray['stock_status'] = $pvalue['stock_status'];
             $temparray['edit'] = '<a href="' . site_url('ProductManager/edit_product/' . $pvalue['id']) . '" class="btn btn-danger"><i class="fa fa-edit"></i> Edit</a>';
+            $temparray['select'] = '<a href="' . site_url('ProductManager/createSerialNo/' . $pvalue['id']) . '" class="btn btn-danger"><i class="fa fa-edit"></i> Select</a>';
 
             array_push($return_array, $temparray);
         }
@@ -803,7 +923,7 @@ class ProductManager extends CI_Controller {
         $querydata = $this->db->get("product_import");
         $resultdata = $querydata->result_array();
         foreach ($resultdata as $ikey => $ivalue) {
-                print_r($ivalue["sku"]);
+            print_r($ivalue["sku"]);
             echo "<br/>";
             $this->db->where("sku", $ivalue["sku"]);
             $this->db->set(array("video_link" => $ivalue["status"]));
@@ -816,8 +936,6 @@ class ProductManager extends CI_Controller {
 //                $this->db->set(array("status" => "0"));
 //                $this->db->update("products");
 //            }
-            
-            
 //            if ($ivalue["status"] == "out of stock") {
 //                print_r($ivalue["sku"]);
 //                echo "<br/>";
@@ -825,7 +943,6 @@ class ProductManager extends CI_Controller {
 //                $this->db->set(array("stock_status" => "Out Of Stock"));
 //                $this->db->update("products");
 //            }            
-            
         }
     }
 

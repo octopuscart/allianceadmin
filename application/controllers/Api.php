@@ -17,442 +17,197 @@ class Api extends REST_Controller {
         $this->load->view('welcome_message');
     }
 
-    function updateCurd_post() {
-        $fieldname = $this->post('name');
-        $value = $this->post('value');
-        $pk_id = $this->post('pk');
-        $tablename = $this->post('tablename');
-        if ($this->checklogin) {
-            $data = array($fieldname => $value);
-            $this->db->set($data);
-            $this->db->where("id", $pk_id);
-            $this->db->update($tablename, $data);
-        }
-    }
-
-    //function for product list
-    function loginOperation_get() {
-        $userid = $this->user_id;
-        $this->db->select('au.id,au.first_name,au.last_name,au.email,au.contact_no');
-        $this->db->from('admin_users au');
-        $this->db->where('id', $userid);
-        $this->db->limit(1);
-        $query = $this->db->get();
-        $result = $query->row();
-        $this->response($result);
-    }
-
-    //Login Function 
-    //function for product list
-    function loginOperation_post() {
-        $email = $this->post('contact_no');
-        $password = $this->post('password');
-        $this->db->select('au.id,au.first_name,au.last_name,au.email,au.contact_no');
-        $this->db->from('admin_users au');
-        $this->db->where('contact_no', $email);
-        $this->db->where('password', md5($password));
-        $this->db->limit(1);
-        $query = $this->db->get();
-        $result = $query->row();
-
-        $sess_data = array(
-            'username' => $result->email,
-            'first_name' => $result->first_name,
-            'last_name' => $result->last_name,
-            'login_id' => $result->id,
-        );
-        $this->session->set_userdata('logged_in', $sess_data);
-        $this->response($result);
-    }
-
-    function registerMobileGuest_post() {
-        $this->config->load('rest', TRUE);
-        header('Access-Control-Allow-Origin: *');
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        $reg_id = $this->post('reg_id');
-        $model = $this->post('model');
-        $manufacturer = $this->post('manufacturer');
-        $uuid = $this->post('uuid');
-        $regArray = array(
-            "reg_id" => $reg_id,
-            "manufacturer" => $manufacturer,
-            "uuid" => $uuid,
-            "model" => $model,
-            "user_id" => "Guest",
-            "user_type" => "Guest",
-            "datetime" => date("Y-m-d H:i:s a")
-        );
-        $this->db->where('reg_id', $reg_id);
-        $query = $this->db->get('gcm_registration');
-        $regarray = $query->result_array();
-        if ($regArray) {
-            
-        } else {
-            $this->db->insert('gcm_registration', $regArray);
-        }
-        $this->response(array("status" => "done"));
-    }
-
-    //Mobile Booking APi
-    function orderFromMobile_post() {
-        header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-        header('Access-Control-Allow-Origin: *');
-
-        $this->config->load('rest', TRUE);
-        $bookingarray = $this->post();
-
-
-        $cartdata = $this->post("cartdata");
-        $cartjson = json_decode($cartdata);
-
-
-
-        $web_order = array(
-            'name' => $this->post('name'),
-            'email' => $this->post('email'),
-            'contact_no' => $this->post('contact_no'),
-            'address' => $this->post('address'),
-            'pincode' => $this->post('pincode'),
-            'order_date' => date("Y-m-d"),
-            'order_time' => date("H:i:s a"),
-            'total_quantity' => $this->post('quantity'),
-            'total_price' => $this->post('total'),
-            'payment_mode' => $this->post('payment_method'),
-            'status' => "Processing",
-            'user_id' => $this->post('user_id') ? $this->post('user_id') :'Guest',
-            'order_key' => $this->post('user_id') ? $this->post('user_id') :'Guest',
-        );
-        $this->db->insert('user_order', $web_order);
-
-        $last_id = $this->db->insert_id();
-        $oderid = $last_id;
-
-        $orderno = "JL" . date('Y/m/d') . "/" . $last_id;
-        $orderkey = md5($orderno);
-        $this->db->set('order_no', $orderno);
-        $this->db->set('order_key', $orderkey);
-        $this->db->where('id', $last_id);
-        $this->db->update('user_order');
-
-        $order_status_data = array(
-            'c_date' => date('Y-m-d'),
-            'c_time' => date('H:i:s'),
-            'order_id' => $last_id,
-            'status' => "Order Confirmed",
-            'user_id' => $this->post('user_id') ? $this->post('user_id') :'Guest',
-            'remark' => "Order Confirmed By Using COD,  Waiting For Payment",
-        );
-        $this->db->insert('user_order_status', $order_status_data);
-
-        foreach ($cartjson as $key => $value) {
-
-
-
-            $product_dict = array(
-                'title' => $value->title,
-                'price' => $value->price,
-                'sku' => $value->sku,
-                'attrs' => "",
-                'vendor_id' => "",
-                'total_price' => $value->total_price,
-                'file_name' => base_url() . 'assets/product_images/' . $value->file_name,
-                'quantity' => $value->quantity,
-                'user_id' => $value->title,
-                'credit_limit' => 0,
-                'order_id' => $last_id,
-                'product_id' => '',
-                'op_date_time' => date('Y-m-d H:i:s'),
-            );
-
-            $this->db->insert('cart', $product_dict);
-        }
-        $this->response(array("order_id" => $oderid));
-    }
-
     function registration_post() {
-        $this->config->load('rest', TRUE);
-        header('Access-Control-Allow-Origin: *');
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        $name = $this->post('name');
-        $email = $this->post('email');
-        $contact_no = $this->post('contact_no');
-        $password = $this->post('password');
-        $usercode = rand(10000000, 99999999);
-        $regArray = array(
-            "name" => $name,
-            "email" => $email,
-            "contact_no" => $contact_no,
-            "password" => $password,
-            "usercode" => $usercode,
-            "datetime" => date("Y-m-d H:i:s a")
-        );
-        $this->db->where('email', $email);
+        $postdata = $this->post();
+        $email = $postdata["email"];
+        $mobile_no = $postdata["contact_no"];
+        $this->db->where("email", $email);
+        $this->db->or_where("contact_no", $mobile_no);
         $query = $this->db->get('app_user');
-        $userdata = $query->row();
+        $userdata = $query->row_array();
         if ($userdata) {
-            $this->response(array("status" => "already", "userdata" => ""));
+            $this->response(array("status" => "401", "message" => "Email or mobile no. already registered"));
         } else {
-            $this->db->insert('app_user', $regArray);
-            $this->response(array("status" => "done", "userdata" => $regArray));
+            $this->db->insert("app_user", $postdata);
+            $insert_id = $this->db->insert_id();
+            $postdata["id"] = $insert_id;
+            if ($insert_id) {
+                $this->response(array("status" => "100", "userdata" => $postdata, "message" => "Your account has been created."));
+            } else {
+                $this->response(array("status" => "402", "message" => "Unable to create account please try again"));
+            }
         }
     }
 
-    function loginmob_post() {
-        $this->config->load('rest', TRUE);
-        header('Access-Control-Allow-Origin: *');
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        $email = $this->post('contact_no');
-        $password = $this->post('password');
-        $regArray = array(
-            "email" => $email,
-            "password" => $password,
-        );
-        $this->db->where('email', $email);
-        $this->db->where('password2', $password);
-        $query = $this->db->get('admin_users');
-        $userdata = $query->row();
+    function login_post() {
+        $postdata = $this->post();
+        $username = $postdata["contact_no"];
+        $password = $postdata["password"];
+        $this->db->where("password", $password);
+        $this->db->where("email", $username);
+        $this->db->or_where("contact_no", $username);
+        $query = $this->db->get('app_user');
+        $userdata = $query->row_array();
         if ($userdata) {
-            $this->response(array("status" => "done", "userdata" => $userdata));
+            if ($userdata["password"] == $password) {
+                $this->response(array("status" => "100", "userdata" => $userdata, "message" => "You have logged in successfully"));
+            } else {
+                $this->response(array("status" => "401", "message" => "You have entered incorrect Password"));
+            }
         } else {
-            $this->response(array("status" => "error", "userdata" => ""));
+            $this->response(array("status" => "401", "message" => "Mobile no. not registered"));
         }
     }
 
     function updateProfile_post() {
-        $this->config->load('rest', TRUE);
-        header('Access-Control-Allow-Origin: *');
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        $email = $this->post('email');
-        $profiledata = array(
-            'name' => $this->post('name'),
-            'email' => $this->post('email'),
-            'contact_no' => $this->post('contact_no'),
-        );
-        $this->db->set($profiledata);
-        $this->db->where('email', $email); //set column_name and value in which row need to update
-        $this->db->update("app_user");
-        $this->db->order_by('name asc');
-
-        $this->db->where('email', $email); //set column_name and value in which row need to update
-        $query = $this->db->get('app_user');
-        $userData = $query->row();
-        $this->response(array("userdata" => $userData));
+        $postdata = $this->post();
+        $user_id = $postdata["id"];
+        unset($postdata["id"]);
+        $this->db->where("id", $user_id);
+        $this->db->set($postdata);
+        $this->db->update('app_user');
+        $postdata["id"] = $user_id;
+        $this->response(array("status" => "200", "userdata" => $postdata, "message" => "Profile updated successfully"));
     }
 
-    //function for product list
-    function userbooking_post() {
-        $this->config->load('rest', TRUE);
-        header('Access-Control-Allow-Origin: *');
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        $email = $this->post('email');
-        $this->db->order_by('id desc');
-        $this->db->where('email', $email);
-        $query = $this->db->get("web_order");
-        $result = $query->result();
-        $this->response($result);
+    function getCardQr_get($stock_id) {
+        $this->load->library('phpqr');
+        $this->phpqr->showcode($stock_id);
     }
 
-//
-    //function for product list
-    function userorder_get($user_id) {
-        $this->db->where('user_id', $user_id);
-        $this->db->order_by('id desc');
-        $query = $this->db->get("user_order");
-        $order_mobile = $query->result_array();
-//        $orderlist = [];
-//        foreach ($order_mobile as $key => $value) {
-//            $orderid = $value['id'];
-//            $this->db->where('order_id', $orderid);
-//            $query = $this->db->get("ordercart");
-//            $cartdata = $query->result_array();
-//            $value['cart_data'] = $cartdata;
-//            array_push($orderlist, $value);
-//        }
-        $this->response($order_mobile);
-    }
+    function getProductBySerialNo_get($serial_no, $plumber_id) {
+        $this->db->where("serial_no", $serial_no);
+        $query = $this->db->get('product_stock');
+        $serial_obj = $query->row_array();
+        if ($serial_obj) {
+            $this->db->where("id", $serial_obj["product_id"]);
+            $query = $this->db->get('products');
+            $productobj = $query->row_array();
+            $imageurl = base_url() . "assets/default/default.png";
+            if ($productobj) {
+                if ($productobj['file_name']) {
+                    $imageurl = base_url() . "assets/product_images/" . $productobj['file_name'];
+                }
+                $productobj['file_name'] = $imageurl;
+                $this->db->where("serial_no", $serial_no);
+                $query = $this->db->get('product_rewards');
+                $serial_objcheck = $query->row_array();
+                if ($serial_objcheck) {
+                    $this->response(array(
+                        "status" => "300",
+                        "message" => "Product already has been used."
+                    ));
+                } else {
+                    $credit_points = $productobj['credit_limit'];
+                    $reward_array = array(
+                        "plumber_id" => $plumber_id,
+                        "product_id" => $productobj["id"],
+                        "serial_no" => $serial_no,
+                        "stock_id" => $serial_obj["id"],
+                        "points" => $credit_points,
+                        "points_type" => "Credit",
+                        "date" => Date("Y-m-d"),
+                        "time" => Date("H:m:s A"),
+                    );
+                    $this->db->insert("product_rewards", $reward_array);
 
-    //function for order details list
-    function userorderdetails_get($order_id) {
-        $this->db->where('id', $order_id);
-        $this->db->order_by('id desc');
-        $query = $this->db->get("user_order");
-        $order_mobile = $query->row();
-        $orderdetails = array("order" => $order_mobile);
-
-        $orderid = $order_mobile->id;
-        $this->db->where('order_id', $order_id);
-        $query = $this->db->get("cart");
-        $cartdata = $query->result_array();
-        $orderdetails['cart_data'] = $cartdata;
-
-
-        $this->response($orderdetails);
-    }
-
-    //-----------
-    //function for product list
-
-    function category_get() {
-        $cats = [65, 67, 69, 70, 71, 73];
-        $cats = [1,2,3,4,5,6,7,8];
-        $this->config->load('rest', TRUE);
-        $this->db->where("parent_id=0");
-        $query = $this->db->get("category");
-        $galleryList = $query->result();
-        $this->response($galleryList);
-    }
-
-    function productCategoryAll_get() {
-        $this->config->load('rest', TRUE);
-        $query = $this->db->get("category");
-        $galleryList = $query->result();
-        $this->response($galleryList);
-    }
-
-    function productCategory_get($category_id) {
-        $this->config->load('rest', TRUE);
-        $categorieslist = $this->Product_model->get_children($category_id, array());
-        $this->response($categorieslist);
-    }
-
-    function productDetails_get($prodct_id) {
-        $this->config->load('rest', TRUE);
-        $this->db->where_in("id", $prodct_id);
-        $query = $this->db->get("products");
-        $productlist = $query->row();
-        $this->response($productlist);
-    }
-
-    function mobilebrands_get() {
-        $cats = [74, 75, 78, 77];
-        $this->config->load('rest', TRUE);
-        $this->db->where_in("id", $cats);
-        $query = $this->db->get("category");
-        $galleryList = $query->result();
-        $catelist = [];
-        foreach ($galleryList as $key => $value) {
-            if ($key % 2 == 0) {
-                $templist = [$galleryList[$key], $galleryList[$key + 1]];
-                array_push($catelist, $templist);
+                    $this->response(array(
+                        "status" => "200",
+                        "message" => "$credit_points reward points have been credited in your account",
+                        "product_info" => $productobj
+                    ));
+                }
+            } else {
+                $this->response(array("status" => "404", "message" => "Invalid Product, Please try again"));
             }
-        }
-        $this->response($catelist);
-    }
-
-    function productListSearch_get() {
-        $this->config->load('rest', TRUE);
-        $search = $this->get('search');
-        $this->db->where("title like '%$search%'");
-        $this->db->where("status", '1');
-//        $this->db->where_in("stock_status", 'In Stock');
-        $query = $this->db->get("products");
-        $productlist = $query->result();
-        $this->response($productlist);
-    }
-
-    function productList_get($categoryid) {
-        $this->config->load('rest', TRUE);
-        $categoriesString = $this->Product_model->stringCategories($categoryid);
-        $categoriesString = ltrim($categoriesString, ", ");
-        $categorylist = explode(", ", $categoriesString);
-        if ($categoriesString) {
-            $categorylist = $categorylist;
         } else {
-            $categorylist = [];
+            $this->response(array("status" => "404", "message" => "Invalid Product, Please try again"));
         }
-        array_push($categorylist, $categoryid);
-        $this->db->where_in("category_id", $categorylist);
-        $this->db->where("status", '1');
-//        $this->db->where_in("stock_status", 'In Stock');
-        $query = $this->db->get("products");
-        $productlist = $query->result();
-        $this->response($productlist);
     }
 
-    function productListOffers_get($categoryid) {
-        $this->config->load('rest', TRUE);
-        $categoriesString = $this->Product_model->stringCategories($categoryid);
+    //Ecome setup
+    function getCategoryList_get() {
+        $result = $this->db->where('parent_id', '0')->get('category')->result_array();
+        $limit = count($result);
+        $limit1 = ((int) ($limit / 9));
+        $limit2 = $limit % 9;
+        $sublimit = $limit2 ? 9 - $limit2 : 0;
+        $flimit = $limit + $sublimit;
+        $rangelimit = range(0, $flimit, 9);
+        $resultdata = [];
+        foreach ($result as $key => $value) {
+            $tempdata = array();
+            $tempdata["title"] = $value["category_name"];
+            $tempdata["image"] = $value["image"] ? base_url() . "assets/media/" . $value["image"] : base_url() . "assets/default/default.png";
+            $tempdata["category_name"] = $value["category_name"];
+            $tempdata["category_id"] = $value["id"];
+            $sub_category = $this->db->get_where('category', array('parent_id' => $value["id"]))->result_array();
+            $tempdata["sub_category"] = $sub_category;
+            $tempsubcat = [];
+            foreach ($sub_category as $sbkey => $sbvalue) {
+                array_push($tempsubcat, $sbvalue["category_name"]);
+            }
+            $tempdata["sub_category_str"] = implode(", ", $tempsubcat);
+            array_push($resultdata, $tempdata);
+        }
+        $this->response($resultdata);
+    }
+
+    function getProductsList_get($category_id, $limit = 20, $startpage = 0) {
+        $categoriesString = $this->Product_model->stringCategories($category_id) . ", " . $category_id;
         $categoriesString = ltrim($categoriesString, ", ");
-        $categorylist = explode(", ", $categoriesString);
-        if ($categoriesString) {
-            $categorylist = $categorylist;
-        } else {
-            $categorylist = [];
+        $product_query = "select pt.id as product_id,  ct.category_name, pt.*
+            from products as pt 
+            join category as ct on ct.id = pt.category_id 
+            where pt.category_id in ($categoriesString) and variant_product_of = ''  order by id
+              limit $startpage, $limit";
+        $product_result = $this->Product_model->query_exe($product_query);
+        $finallist = [];
+        foreach ($product_result as $key => $value) {
+            $productobj = $value;
+            $imageurl = base_url() . "assets/default/default.png";
+            if ($productobj['file_name']) {
+                $imageurl = base_url() . "assets/product_images/" . $productobj['file_name'];
+            }
+            $productobj["image"] = $imageurl;
+            $category = $this->Product_model->parent_get($productobj["category_id"]);
+            if ($category) {
+                $productobj["category_nav"] = $category["category_string"];
+            }
+
+            $productobj["price"] = number_format($productobj["price"], 2, '.', '');
+
+            array_push($finallist, $productobj);
         }
-        array_push($categorylist, $categoryid);
-        $this->db->where_in("category_id", $categorylist);
-        $this->db->where("status", '1');
-        $this->db->where("offer", '1');
-//        $this->db->where_in("stock_status", 'In Stock');
-        $query = $this->db->get("products");
-        $productlist = $query->result();
-        $this->response($productlist);
+
+        $this->response($finallist);
     }
 
-    function productListOffersFront_get($categoryid) {
-        $this->config->load('rest', TRUE);
-        $categoriesString = $this->Product_model->stringCategories($categoryid);
-        $categoriesString = ltrim($categoriesString, ", ");
-        $categorylist = explode(", ", $categoriesString);
-        if ($categoriesString) {
-            $categorylist = $categorylist;
-        } else {
-            $categorylist = [];
+    function getUserPoints_get($user_id) {
+        $this->db->where('plumber_id', $user_id);
+        $this->db->order_by("id desc");
+        $query = $this->db->get('product_rewards');
+        $userpointdata = $query->result_array();
+        $creditList = [];
+        $debititList = [];
+        $creditsum = 0;
+        $debitsum = 0;
+        $finallist = [];
+        foreach ($userpointdata as $pkey => $pvalue) {
+            $this->db->where("id", $pvalue["product_id"]);
+            $query = $this->db->get('products');
+            $productobj = $query->row_array();
+            $pvalue["product"] = $productobj["title"];
+            if ($pvalue['points_type'] == "Credit") {
+                array_push($creditList, $pvalue);
+                $creditsum += $pvalue["points"];
+            } else {
+                $debitsum += $pvalue["points"];
+                array_push($debititList, $pvalue);
+            }
+            array_push($finallist, $pvalue);
         }
-        array_push($categorylist, $categoryid);
-        $this->db->where_in("category_id", $categorylist);
-        $this->db->where("status", '1');
-        $this->db->where("offer", '1');
-        $this->db->limit(10);
-        $query = $this->db->get("products");
-        $productlist = $query->result();
-        $this->response($productlist);
-    }
-
-    function enquiry_post() {
-        $this->config->load('rest', TRUE);
-        header('Access-Control-Allow-Origin: *');
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        $enquiry = array(
-            'name' => $this->post('name'),
-            'message' => $this->post('message'),
-            'email' => $this->post('email'),
-            'contact' => $this->post('contact_no'),
-        );
-
-        $this->db->insert('web_enquiry', $enquiry);
-    }
-
-    function paymentInstamojo_get() {
-        $this->config->load('rest', TRUE);
-        header('Access-Control-Allow-Origin: *');
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, 'https://www.instamojo.com/api/1.1/payment-requests/');
-        curl_setopt($ch, CURLOPT_HEADER, FALSE);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($ch, CURLOPT_HTTPHEADER,
-                array("X-Api-Key:7987c263e708a6a7c88eebe6701dc834",
-                    "X-Auth-Token:ad1c848926d896c37a2d0dad200261c2"));
-        $payload = Array(
-            'purpose' => 'FIFA 16',
-            'amount' => '2500',
-            'phone' => '9999999999',
-            'buyer_name' => 'John Doe',
-            'redirect_url' => 'http://www.example.com/redirect/',
-            'send_email' => true,
-            'webhook' => 'http://www.example.com/webhook/',
-            'send_sms' => true,
-            'email' => 'foo@example.com',
-            'allow_repeated_payments' => false
-        );
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));
-        $response = curl_exec($ch);
-        curl_close($ch);
-        $this->response($response);
+        $this->response(array("pointlist" => $finallist, "credit" => $creditsum, "debitsum" => $debitsum, "totalremain" => ($creditsum - $debitsum)));
     }
 
 }

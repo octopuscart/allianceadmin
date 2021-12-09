@@ -56,7 +56,7 @@ $this->load->view('layout/topmenu');
                 <div class="panel-body">
 
 
-                    <form action="#" method="post">
+                    <form action="#" method="post" enctype="multipart/form-data" class="">
                         <div class="form-group">
                             <label for="exampleInputEmail1">Parent Category</label><br/>
                             <span class='categorystring'>{{selectedCategory.category_string}}</span>
@@ -79,23 +79,21 @@ $this->load->view('layout/topmenu');
                             <input type="text" class="form-control"  name="description" id="description" placeholder="Description" ng-model="selectedCategory.category.description">
                         </div>
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
+                                <div class="thumbnail">
 
+                                    <img src="{{selectedCategory.category.image?'<?php echo (base_url() . "assets/media/"); ?>'+selectedCategory.category.image:'<?php echo (base_url() . "assets/default/default.png"); ?>'}}" style="   height:100px;width:100px;">
+                                    <div class="caption">
+                                        <div class="form-group">
+                                            <label for="image1">Upload Primary Image</label>
+                                            <input type="file" name="picture" file-model="filename"  />           
+                                        </div>
+                                    </div>
+                                </div>
                                 <input type="text" class="form-control"  name="image" id="description" placeholder="Image" ng-model="selectedCategory.category.image" style="display: none">
-
-                                <div class="product_image product_image_back" style="background: url(<?php echo (base_url() . "assets/media/"); ?>{{selectedCategory.category.image}})" ng-if="selectedCategory.category.image">
-                                </div>
-
-                                <div class="product_image product_image_back" style="background: url(<?php echo (base_url() . "assets/default/default.png"); ?>)" ng-if="!selectedCategory.category.image">
-                                </div>
-
-
                             </div>
-                            <div class="col-md-3" style="margin: 33px 0px;">
-                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
-                                    Choose Image
-                                </button>
-                            </div>
+
+
                         </div>
                         <br/>
                         <button id='submit_button' type="submit" name="submit" class="btn btn-primary" value="{{selectedCategory.operation}}">{{selectedCategory.operation}}</button>
@@ -128,7 +126,7 @@ $this->load->view('layout/topmenu');
                         foreach ($images as $key => $value) {
                             ?>
                             <div class="">
-                                <div class="product_image product_image_back" ng-click="selectImage('<?php echo $value->image;?>')" style="background: url(<?php echo (base_url() . "assets/media/" . $value->image); ?>)">
+                                <div class="product_image product_image_back" ng-click="selectImage('<?php echo $value->image; ?>')" style="background: url(<?php echo (base_url() . "assets/media/" . $value->image); ?>)">
                                 </div>
                             </div>
                             <?php
@@ -165,8 +163,8 @@ $this->load->view('layout/footer');
             "category": {'parent_id': '0', 'category_name': '', 'description': '', 'id': '', "image": ""},
             "operation": "Add Category"
         };
-        
-        $scope.selectImage = function(image){
+
+        $scope.selectImage = function (image) {
             console.log(image)
             $scope.selectedCategory.category.image = image;
             $("#myModal").modal("hide");

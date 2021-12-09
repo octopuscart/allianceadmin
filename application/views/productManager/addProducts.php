@@ -31,15 +31,16 @@ $this->load->view('layout/topmenu');
 
                 <?php echo $this->session->flashdata('success_msg'); ?>
                 <?php echo $this->session->flashdata('error_msg'); ?>
-                <form action="#" method="post" enctype="multipart/form-data">
+                <form action="#" method="post" enctype="multipart/form-data" class="">
+                    <div class="form-group">
+                        <label >Model No.</label>
+                        <input type="text" class="form-control" name="sku"  aria-describedby="emailHelp" placeholder="" required="">
+                    </div>
                     <div class="form-group">
                         <label >Title</label>
                         <input type="text" class="form-control" name="title"  aria-describedby="emailHelp" placeholder="" required="">
                     </div>
-                    <div class="form-group">
-                        <label >Short Description</label>
-                        <input type="text" class="form-control" name="short_description"  aria-describedby="emailHelp" placeholder="" required="">
-                    </div>
+
                     <div class="form-group">
                         <label >Category         </label><br/>
                         <span class='categorystring'>{{selectedCategory.category_string}}</span>
@@ -53,26 +54,36 @@ $this->load->view('layout/topmenu');
                         <textarea class="form-control"  name="description" style="height:100px"></textarea>
                     </div>
 
+                    <!--credit_limit-->
+                    <div class="row">
 
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label >Credit Points</label>
+                                <input type="number" class="form-control " id='finalprice12' name="credit_limit"  placeholder="" value="" required=""> 
+                            </div>
+                        </div>
+                    </div>
+                    <!--end of credit_limit-->
                     <!--price-->
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label >Regular Price</label>
-                                <input type="number" class="form-control price_tag_text" id='regular_price' name="regular_price"  aria-describedby="emailHelp" placeholder="" value="" required="">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label >Sale Price</label>
-                                <input type="number" class="form-control price_tag_text" id='sale_price' name="sale_price"  aria-describedby="emailHelp" placeholder="" value=""> 
-                            </div>
-                        </div>
+                        <!--                        <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label >Regular Price</label>
+                                                        <input type="number" class="form-control price_tag_text" id='regular_price' name="regular_price"  aria-describedby="emailHelp" placeholder="" value="" required="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label >Sale Price</label>
+                                                        <input type="number" class="form-control price_tag_text" id='sale_price' name="sale_price"  aria-describedby="emailHelp" placeholder="" value=""> 
+                                                    </div>
+                                                </div>-->
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label >Final Price</label>
-                                <span class="final_price form-control" id='finalprice'></span>
-                                <input type="hidden" class="form-control price_tag_text" id='finalprice1' name="price"  aria-describedby="emailHelp" placeholder="" value=""> 
+
+                                <input type="number" class="form-control" id='finalprice1' name="price"   placeholder="" value=""  required=""> 
 
                             </div>
                         </div>
@@ -87,8 +98,8 @@ $this->load->view('layout/topmenu');
                     <div class="row">
                         <div class="col-md-3">
                             <div class="thumbnail">
-                              
-                                <img src="<?php echo (base_url() . "assets/default/default.png");?>" style="    width: 100%;">
+
+                                <img src="<?php echo (base_url() . "assets/default/default.png"); ?>" style="    width: 100%;">
                                 <div class="caption">
                                     <div class="form-group">
                                         <label for="image1">Upload Primary Image</label>
@@ -105,15 +116,15 @@ $this->load->view('layout/topmenu');
                     <div class='row'>
 
 
-                        <div class="col-md-3">  
-                            <div class="form-group">
-                                <label >Show In Offers</label>
-                                <select  name='offer' class='form-control'>
-                                    <option value='1' >Yes</option>
-                                    <option value='0' >No</option>
-                                </select>
-                            </div>
-                        </div>
+                        <!--                        <div class="col-md-3">  
+                                                    <div class="form-group">
+                                                        <label >Show In Offers</label>
+                                                        <select  name='offer' class='form-control'>
+                                                            <option value='1' >Yes</option>
+                                                            <option value='0' >No</option>
+                                                        </select>
+                                                    </div>
+                                                </div>-->
 
                         <div class="col-md-3">                           
                             <div class="form-group">
@@ -178,25 +189,25 @@ $this->load->view('layout/footer');
 ?> 
 <script>
                             $(function () {
-                                $(".price_tag_text").keyup(function () {
-                                    var rprice = Number($("#regular_price").val());
-                                    var sprice = Number($("#sale_price").val());
-                                    console.log(sprice, rprice)
-                                    if (sprice) {
-                                        if (rprice > sprice) {
-                                            $("#finalprice").text(sprice);
-                                            $("#finalprice1").val(sprice);
-                                        } else {
-                                            $("#finalprice").text(rprice);
-                                            $("#finalprice1").val(rprice);
-                                            $("#sale_price").val(0)
-                                        }
-                                    } else {
-                                        $("#finalprice").text(rprice);
-                                        $("#finalprice1").val(rprice);
-                                        $("#sale_price").val(0)
-                                    }
-                                })
+//                                $(".price_tag_text").keyup(function () {
+//                                    var rprice = Number($("#regular_price").val());
+//                                    var sprice = Number($("#sale_price").val());
+//                                    console.log(sprice, rprice)
+//                                    if (sprice) {
+//                                        if (rprice > sprice) {
+//                                            $("#finalprice").text(sprice);
+//                                            $("#finalprice1").val(sprice);
+//                                        } else {
+//                                            $("#finalprice").text(rprice);
+//                                            $("#finalprice1").val(rprice);
+//                                            $("#sale_price").val(0)
+//                                        }
+//                                    } else {
+//                                        $("#finalprice").text(rprice);
+//                                        $("#finalprice1").val(rprice);
+//                                        $("#sale_price").val(0)
+//                                    }
+//                                })
                             });
 
 </script>
@@ -246,6 +257,7 @@ $this->load->view('layout/footer');
         $(document).on("click", "[selectcategory]", function (event) {
             var catid = $(this).attr("selectcategory");
             $scope.getCategoryString(catid);
+            $("#category_model").modal("hide");
         })
 
 

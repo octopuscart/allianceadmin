@@ -41,7 +41,7 @@ function truncate($str, $len) {
                 <div class="stats-icon"><i class="fa fa-pencil-square"></i></div>
                 <div class="stats-info">
                     <h4>Total Orders</h4>
-                    <p><?php echo $total_order; ?></p>	
+                    <p>10</p>	
                 </div>
                 <!--                <div class="stats-link">
                                     <a href="javascript:;">View Detail <i class="fa fa-arrow-circle-o-right"></i></a>
@@ -54,7 +54,7 @@ function truncate($str, $len) {
                 <div class="stats-icon"><i class="fa fa-usd"></i></div>
                 <div class="stats-info">
                     <h4>Total Amount</h4>
-                    <p><?php echo $total_amount; ?></p>	
+                    <p>10</p>	
                 </div>
                 <!--                <div class="stats-link">
                                     <a href="javascript:;">View Detail <i class="fa fa-arrow-circle-o-right"></i></a>
@@ -107,106 +107,7 @@ function truncate($str, $len) {
         <div class="col-md-8">
 
 
-            <div class="panel panel-inverse" data-sortable-id="index-1">
-                <div class="panel-heading">
-
-                    <h4 class="panel-title">Order Data (Last 30 Days)</h4>
-                </div>
-                <div class="panel-body">
-                    <div class="height-sm" data-scrollbar="true">
-
-
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 20px">S. NO.</th>
-                                    <th style="width:200px">Order Information</th>
-                                    <th style="width:200px">Customer Information</th>
-
-                                    <th>Status</th>
-                                    <th></th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                if (count($orderslist)) {
-                                    $count = 1;
-                                    foreach ($orderslist as $key => $value) {
-                                        ?>
-                                        <tr style="border-bottom: 1px solid #000;">
-                                            <td>
-                                                <?php echo $count; ?>
-                                            </td>
-                                            <td>
-                                                <table class="small_table">
-                                                    <tr>
-                                                        <td>
-
-                                                            <b>#<?php echo $value->order_no; ?></b>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-
-                                                        <td>Amount: {{<?php echo $value->total_price; ?>|currency:" "}}</td>
-                                                    </tr>
-
-                                                </table>
-
-                                            </td>
-
-                                            <td>
-
-                                                <b> <?php echo $value->name; ?></b>
-                                                <table class="small_table">
-                                                    <tr>
-
-                                                        <td class="overtext"> <a href="#" title="<?php echo $value->email; ?>"><?php echo $value->email; ?></a></td>
-                                                    </tr>
-                                                    <tr>
-
-                                                        <td> <?php echo $value->contact_no; ?></td>
-                                                    </tr>
-                                                    <tr>
-
-                                                        <td> <?php echo $value->zipcode; ?>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-
-                                            </td>
-
-
-
-                                            <td>
-                                                <?php
-                                                echo $value->payment_mode;
-                                                ?>
-                                            </td>
-                                            <td>
-                                                <?php
-                                                echo $value->status_datetime;
-                                                ?>
-                                            </td>
-                                            <td>
-                                                <a href="<?php echo site_url("order/orderdetails/" . $value->order_key); ?>" class="btn btn-primary btn-sm" style="    margin-top: 20%;"> <i class="fa fa-arrow-circle-right"></i></a>
-                                            </td>
-                                        </tr>
-                                        <?php
-                                        $count++;
-                                    }
-                                } else {
-                                    ?>
-                                <h4><i class="fa fa-warning"></i> No order found</h4>
-                                <?php
-                            }
-                            ?>
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+   
 
 
 
@@ -250,47 +151,7 @@ function truncate($str, $len) {
         <!-- end col-8 -->
              <!-- begin col-4 -->
         <div class="col-md-4">
-            <div class="panel panel-inverse" data-sortable-id="index-6">
-                <div class="panel-heading">
-                    <div class="panel-heading-btn">
-                        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
-                        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
-                        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
-                        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
-                    </div>
-                    <h4 class="panel-title">Payment Details</h4>
-                </div>
-                <div class="panel-body p-t-0">
-                    <table class="table table-valign-middle m-b-0">
-                        <thead>
-                            <tr>	
-                                <th>Payment Mode</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            foreach ($paymentdata as $key => $value) {
-                                ?>
-                                <tr>
-                                    <td><label class="label label-danger"><?php echo $value['payment_mode']; ?></label></td>
-                                    <td><?php echo $value['count']; ?> 
-                                        <?php
-                                        if ($key == 0) {
-                                            ?>
-                                            <span class="text-success"><i class="fa fa-arrow-up"></i></span>
-                                            <?php
-                                        }
-                                        ?>
-                                    </td>
-                                </tr>
-                                <?php
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+           
 
             <div class="panel panel-inverse" data-sortable-id="index-9">
                 <div class="panel-heading">

@@ -7,3 +7,16 @@
 .f_40{
     font-size: 40px;
 }
+
+
+.minitable{
+    width:100%;
+}
+.minitable td{
+    padding: 5px;
+    border-bottom: 1px solid #cdcdcd;
+}
+
+.smallfonttable td{
+    font-size:11px;
+}

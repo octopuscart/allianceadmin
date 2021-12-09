@@ -25,14 +25,14 @@ $islocal = false;
 
 if (strpos($baselink, '192.168')) {
     $islocal = true;
-   
+   $baselinkmain = 'http://' . $baselinkurl . '/allianceadmin';
 } elseif (strpos($baselink, 'localhost')) {
     $islocal = true;
    
-    $baselinkmain = 'http://' . $baselinkurl . '/prkfashionsadmin';
+    $baselinkmain = 'http://' . $baselinkurl . '/allianceadmin';
 } elseif (strpos($baselink, 'localhost')) {
     $islocal = true;
-    $baselinkmain = 'http://' . $baselinkurl . '/prkfashionsadmin';
+    $baselinkmain = 'http://' . $baselinkurl . '/allianceadmin';
 } else {
     $baselinkmain = 'https://' . $baselinkurl . '/';
 }

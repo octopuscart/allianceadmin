@@ -1,5 +1,6 @@
 <?php
-$this->load->view('layout/layoutTop');
+$this->load->view('layout/header');
+$this->load->view('layout/topmenu');
 ?>
 <style>
     .product_image{
@@ -116,6 +117,6 @@ $this->load->view('layout/layoutTop');
 
 
 <?php
-$this->load->view('layout/layoutFooter');
+$this->load->view('layout/footer');
 ?> 
 

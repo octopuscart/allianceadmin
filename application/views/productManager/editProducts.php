@@ -34,10 +34,14 @@ $this->load->view('layout/topmenu');
                 <?php echo $this->session->flashdata('error_msg'); ?>
                 <form action="#" method="post" enctype="multipart/form-data">
                     <div class="form-group">
+                        <label >Model No. </label>
+                        <input type="text" class="form-control" name="sku"   placeholder="" required="" value="<?php echo $product_obj->sku; ?>">
+                    </div>
+                    <div class="form-group">
                         <label >Title</label>
                         <input type="text" class="form-control" name="title"  aria-describedby="emailHelp" placeholder="" value="<?php echo $product_obj->title; ?>">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none">
                         <label >Short Description</label>
                         <input type="text" class="form-control" name="short_description"  aria-describedby="emailHelp" placeholder="" value="<?php echo $product_obj->short_description; ?>">
                     </div>
@@ -45,25 +49,35 @@ $this->load->view('layout/topmenu');
                         <label >Category         </label><br/>
                         <span class='categorystring'>{{selectedCategory.category_string}}</span>
                         <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target=".categoryopen" style="margin-left: 21px;">Select Category</button>
-
                         <input type="hidden" name="category_name" id="category_id" value="<?php echo $product_obj->category_id; ?>">
-
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Description</label>
                         <textarea class="form-control"  name="description" style="height:100px"><?php echo $product_obj->description; ?></textarea>
                     </div>
-
-
-                    <!--price-->
+                    
+                    
+                     <!--credit_limit-->
                     <div class="row">
+                        
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label >Regular Price</label>
-                                <input type="number" class="form-control price_tag_text" id='regular_price' name="regular_price"  aria-describedby="emailHelp" placeholder="" value="<?php echo $product_obj->regular_price; ?>">
+                                <label >Credit Points</label>
+                                <input type="number" class="form-control " id='finalprice1' name="credit_limit"  placeholder="" value="<?php echo $product_obj->credit_limit; ?>"  required=""> 
                             </div>
                         </div>
-                        <div class="col-md-4">
+                    </div>
+                    <!--end of credit_limit-->
+                    
+                    <!--price-->
+                    <div class="row">
+                        <div class="col-md-4" style="display: none;">
+                            <div class="form-group" >
+                                <label >Regular Price</label>
+                                <input type="number" class="form-control price_tag_text" id='regular_price' name="regular_price"  placeholder=""  required="" value="<?php echo $product_obj->regular_price; ?>">
+                            </div>
+                        </div>
+                        <div class="col-md-4"  style="display: none;">
                             <div class="form-group">
                                 <label >Sale Price</label>
                                 <input type="number" class="form-control price_tag_text" id='sale_price' name="sale_price"  aria-describedby="emailHelp" placeholder="" value="<?php echo $product_obj->sale_price; ?>"> 
@@ -72,17 +86,11 @@ $this->load->view('layout/topmenu');
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label >Final Price</label>
-                                <span class="final_price form-control" id='finalprice'><?php echo $product_obj->price; ?></span>
-                                <input type="hidden" class="form-control price_tag_text" id='finalprice1' name="price"  aria-describedby="emailHelp" placeholder="" value="<?php echo $product_obj->price; ?>"> 
-
+                                <input type="number" class="form-control " id='finalprice1' name="price"  placeholder="" value="<?php echo $product_obj->price; ?>"> 
                             </div>
                         </div>
-
-
                     </div>
                     <!--end of price-->
-
-
 
                     <!--pictures-->
                     <div class="row">
@@ -101,11 +109,6 @@ $this->load->view('layout/topmenu');
                                     <?php
                                 }
                                 ?>
-
-
-
-
-
                                 <div class="caption">
                                     <div class="form-group">
                                         <label for="image1">Upload Primary Image</label>
@@ -167,7 +170,7 @@ $this->load->view('layout/topmenu');
 
                     <!--product availabilities-->
                     <div class='row'>
-                        <div class="col-md-3">    
+                        <div class="col-md-3"   style="display: none;">    
                             <div class="form-group">
                                 <label >Show In Offers</label>
                                 <select  name='offer' class='form-control'>
@@ -188,11 +191,6 @@ $this->load->view('layout/topmenu');
                             </div>
                         </div>
                     </div>
-
-
-
-
-
 
                     <button type="submit" name="editdata" class="btn btn-primary">Submit</button>
                     <?php

@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 define('PANELVERSION', "V0.9.5.18");
 
 //Project inforamtion
-define('AUTOSKU', True);
+define('AUTOSKU', false);
 define('SKU_PREFIX', 'MM');
 define('DEFAULT_IMAGE', 'image/default_image.jpg');
 define('GLOBAL_CURRENCY', $configuration['currency']);

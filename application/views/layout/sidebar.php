@@ -7,6 +7,19 @@ if ($userdata) {
 }
 $menu_control = array();
 
+
+$order_menu = array(
+    "title" => "Rewards Manegement",
+    "icon" => "fa fa-gift",
+    "active" => "",
+    "sub_menu" => array(
+        "Redeem Request" => site_url("Order/rewardrequests"),
+        "Reward Analytics" => site_url("Order/index"),
+    ),
+);
+array_push($menu_control, $order_menu);
+
+
 $product_menu = array(
     "title" => "Product Manegement",
     "icon" => "ion-cube",
@@ -14,11 +27,10 @@ $product_menu = array(
     "sub_menu" => array(
         "Add Product" => site_url("ProductManager/add_product"),
         "Product Reports" => site_url("ProductManager/productReport"),
+        "Product Stock" => site_url("ProductManager/createSerialNo"),
         "Categories" => site_url("ProductManager/categories"),
         "Product Out Of Stock" => site_url("ProductManager/productReportStockOut"),
         "Product Removed" => site_url("ProductManager/productReportTrash"),
-        "Product Attribute" => site_url("ProductAttribute/attributeList"),
-        
 //        "Items Prices" => site_url("ProductManager/categoryItems"),
 //        "Product Sorting" => site_url("ProductManager/productSorting"),
 //        "Product Colors" => site_url("ProductManager/productColors"),
@@ -36,67 +48,19 @@ if (DEFAULT_PAYMENT == 'No') {
 array_push($menu_control, $product_menu);
 
 
-$order_menu = array(
-    "title" => "Order Manegement",
-    "icon" => "fa fa-list",
-    "active" => "",
-    "sub_menu" => array(
-        "Orders Reports" => site_url("Order/orderslist"),
-        "Order Analytics" => site_url("Order/index"),
-    ),
-);
-array_push($menu_control, $order_menu);
+
 
 $client_menu = array(
-    "title" => "Client Manegement",
+    "title" => "Plumber Manegement",
     "icon" => "fa fa-users",
     "active" => "",
     "sub_menu" => array(
-        "Clients Reports" => site_url("UserManager/usersReport"),
+        "Plumbers Reports" => site_url("AppUser/index"),
     ),
 );
 array_push($menu_control, $client_menu);
 
 
-
-$blog_menu = array(
-    "title" => "Blog Management",
-    "icon" => "fa fa-edit",
-    "active" => "",
-    "sub_menu" => array(
-        "Categories" => site_url("CMS/blogCategories"),
-        "Add New" => site_url("CMS/newBlog"),
-        "Blog List" => site_url("CMS/blogList"),
-        "Tags" => site_url("CMS/blogTag"),
-        "Blog comments" => site_url("CMS/blogComment"),
-    ),
-);
-array_push($menu_control, $blog_menu);
-
-$review_menu = array(
-    "title" => "Review Management",
-    "icon" => "fa fa-star",
-    "active" => "",
-    "sub_menu" => array(
-        "All Reviews" => site_url("CMS/reviewList"),
-        
-    ),
-);
-array_push($menu_control, $review_menu);
-
-
-
-$lookbook_menu = array(
-    "title" => "Media Management",
-    "icon" => "fa fa-image",
-    "active" => "",
-    "sub_menu" => array(
-        "Images" => site_url("Media/images"),
-
-//        "Tags" => site_url("CMS/blogTag"),
-    ),
-);
-array_push($menu_control, $lookbook_menu);
 
 $slide_menu = array(
     "title" => "Slider Management",
@@ -105,24 +69,11 @@ $slide_menu = array(
     "sub_menu" => array(
         "Add slider" => site_url("CMS/AddSlide"),
         "Slider list" => site_url("CMS/Sliderlist"),
-        
-
 //        "Tags" => site_url("CMS/blogTag"),
     ),
 );
 array_push($menu_control, $slide_menu);
 
-//
-//$cms_menu = array(
-//    "title" => "Content Management",
-//    "icon" => "fa fa-file-text",
-//    "active" => "",
-//    "sub_menu" => array(
-//        "Look Book" => site_url("CMS/lookbook"),
-//        "Blog" => site_url("CMS/blog"),
-//    ),
-//);
-//array_push($menu_control, $cms_menu);
 
 
 $msg_menu2 = array(
@@ -176,28 +127,6 @@ $setting_menu = array(
 array_push($menu_control, $setting_menu);
 
 
-
-$social_menu = array(
-    "title" => "Social Management",
-    "icon" => "fa fa-calendar",
-    "active" => "",
-    "sub_menu" => array(
-        "Social Link" => site_url("CMS/socialLink"),
-    ),
-);
-array_push($menu_control, $social_menu);
-
-
-$seo_menu = array(
-    "title" => "SEO",
-    "icon" => "fa fa-calendar",
-    "active" => "",
-    "sub_menu" => array(
-        "General" => site_url("CMS/siteSEOConfigUpdate"),
-        "Page Wise Setting" => site_url("CMS/seoPageSetting"),
-    ),
-);
-array_push($menu_control, $seo_menu);
 
 
 
