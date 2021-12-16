@@ -184,30 +184,73 @@ class Api extends REST_Controller {
     }
 
     function getUserPoints_get($user_id) {
-        $this->db->where('plumber_id', $user_id);
-        $this->db->order_by("id desc");
-        $query = $this->db->get('product_rewards');
-        $userpointdata = $query->result_array();
-        $creditList = [];
-        $debititList = [];
-        $creditsum = 0;
-        $debitsum = 0;
-        $finallist = [];
-        foreach ($userpointdata as $pkey => $pvalue) {
-            $this->db->where("id", $pvalue["product_id"]);
-            $query = $this->db->get('products');
-            $productobj = $query->row_array();
-            $pvalue["product"] = $productobj["title"];
-            if ($pvalue['points_type'] == "Credit") {
-                array_push($creditList, $pvalue);
-                $creditsum += $pvalue["points"];
-            } else {
-                $debitsum += $pvalue["points"];
-                array_push($debititList, $pvalue);
-            }
-            array_push($finallist, $pvalue);
+        $returndata = $this->Product_model->getUserPoints($user_id);
+        $this->response($returndata);
+    }
+
+    function getUserRewardCard_get($user_id, $plimit = 0) {
+        $limit = 20;
+        $returndata = $this->Product_model->getUserPoints($user_id);
+        
+        $this->db->select("sum(points) as total");
+        $this->db->where("user_id", $user_id);
+        $query = $this->db->get("product_rewards_request");
+        $rcarddata = $query->row_array();
+        
+        $cardtotal = $rcarddata["total"];
+        
+        $totalpoints = $returndata["totalremain"]-$cardtotal;
+        
+        $remains = $totalpoints % $limit;
+        $blocklimit = ($totalpoints - $remains) / $limit;
+        $pointarray = array("limit" => $limit, "total_points" => $totalpoints, "points" => [], "extra_points" => $remains, "remains" => $limit - $remains);
+
+        $this->db->where("user_id", $user_id);
+        $this->db->limit( 20, $plimit);
+        $query = $this->db->get("product_rewards_request");
+        $resultdata = $query->result_array();
+
+        for ($i = 0; $i < $blocklimit; $i++) {
+            $temparray = array(
+                "date" => date("Y-m-d"),
+                "time" => date("H:m:s A"),
+                "status" => "Redeem",
+                "points" => $limit,
+                "amount" => ""
+            );
+            array_push($pointarray["points"], $temparray);
         }
-        $this->response(array("pointlist" => $finallist, "credit" => $creditsum, "debitsum" => $debitsum, "totalremain" => ($creditsum - $debitsum)));
+     
+        foreach ($resultdata as $key => $value) {
+            $temparray = array(
+                "date" => $value["date"],
+                "time" => $value["time"],
+                "status" => $value["status"],
+                "points" => $value["points"],
+                "amount" => ""
+            );
+            array_push($pointarray["points"], $temparray);
+        }
+
+        $this->response($pointarray);
+    }
+
+    function requestRedeem_post() {
+        $postdata = $this->post();
+        $reward_array = array(
+            "points" => $postdata["rewards_point"],
+            "point_id" => "",
+            "date" => Date("Y-m-d"),
+            "time" => Date("H:m:s A"),
+            "user_id" => $postdata["user_id"],
+            "status" => "Waiting",
+            "payment_status" => "",
+            "payment_id" => "",
+            "txn_id" => "",
+            "remark" => "",
+        );
+        $this->db->insert("product_rewards_request", $reward_array);
+        $this->response($postdata);
     }
 
 }

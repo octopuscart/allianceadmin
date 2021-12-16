@@ -49,7 +49,7 @@ class Product_model extends CI_Model {
             }
             return $category;
         } else {
-             return $category;
+            return $category;
         }
     }
 
@@ -79,7 +79,7 @@ class Product_model extends CI_Model {
         return array('category_string' => $catstring, "category_array" => $catarray);
     }
 
-    function child($id){
+    function child($id) {
         $this->db->where('parent_id', $id);
         $query = $this->db->get('category');
         if ($query->num_rows() > 0) {
@@ -181,9 +181,36 @@ where pa.product_id=$product_id ";
         $container = "";
         foreach ($category as $ckey => $cvalue) {
             $container .= $this->stringCategories($cvalue['id']);
-            $container .=", " . $cvalue['id'];
+            $container .= ", " . $cvalue['id'];
         }
         return $container;
+    }
+
+    function getUserPoints($user_id) {
+        $this->db->where('plumber_id', $user_id);
+        $this->db->order_by("id desc");
+        $query = $this->db->get('product_rewards');
+        $userpointdata = $query->result_array();
+        $creditList = [];
+        $debititList = [];
+        $creditsum = 0;
+        $debitsum = 0;
+        $finallist = [];
+        foreach ($userpointdata as $pkey => $pvalue) {
+            $this->db->where("id", $pvalue["product_id"]);
+            $query = $this->db->get('products');
+            $productobj = $query->row_array();
+            $pvalue["product"] = $productobj["title"];
+            if ($pvalue['points_type'] == "Credit") {
+                array_push($creditList, $pvalue);
+                $creditsum += $pvalue["points"];
+            } else {
+                $debitsum += $pvalue["points"];
+                array_push($debititList, $pvalue);
+            }
+            array_push($finallist, $pvalue);
+        }
+        return array("pointlist" => $finallist, "credit" => $creditsum, "debitsum" => $debitsum, "totalremain" => ($creditsum - $debitsum));
     }
 
 }

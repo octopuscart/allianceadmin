@@ -119,7 +119,6 @@ $setting_menu = array(
     "active" => "",
     "sub_menu" => array(
         "System Log" => site_url("Services/systemLogReport"),
-        "Report Configuration" => site_url("Configuration/reportConfiguration"),
     ),
 );
 
