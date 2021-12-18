@@ -200,13 +200,15 @@ where pa.product_id=$product_id ";
             $this->db->where("id", $pvalue["product_id"]);
             $query = $this->db->get('products');
             $productobj = $query->row_array();
-            $pvalue["product"] = $productobj["title"];
+
             if ($pvalue['points_type'] == "Credit") {
                 array_push($creditList, $pvalue);
                 $creditsum += $pvalue["points"];
+                $pvalue["product"] = $productobj ? $productobj["title"] : "";
             } else {
                 $debitsum += $pvalue["points"];
                 array_push($debititList, $pvalue);
+                $pvalue["product"] =  "Points have been redeemed.";
             }
             array_push($finallist, $pvalue);
         }
