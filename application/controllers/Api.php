@@ -32,6 +32,15 @@ class Api extends REST_Controller {
             $insert_id = $this->db->insert_id();
             $postdata["id"] = $insert_id;
             if ($insert_id) {
+                $imagepath = base_url() . "assets/profile_image/";
+                $profile_image = $postdata["profile_image"];
+                if ($profile_image) {
+                    $profile_image = $imagepath . $profile_image;
+                } else {
+                    $profile_image = $imagepath . "default.png";
+                }
+                $postdata["profile_image"] = $profile_image;
+
                 $this->response(array("status" => "100", "userdata" => $postdata, "message" => "Your account has been created."));
             } else {
                 $this->response(array("status" => "402", "message" => "Unable to create account please try again"));
@@ -50,6 +59,14 @@ class Api extends REST_Controller {
         $userdata = $query->row_array();
         if ($userdata) {
             if ($userdata["password"] == $password) {
+                $imagepath = base_url() . "assets/profile_image/";
+                $profile_image = $userdata["profile_image"];
+                if ($profile_image) {
+                    $profile_image = $imagepath . $profile_image;
+                } else {
+                    $profile_image = $imagepath . "default.png";
+                }
+                $userdata["profile_image"] = $profile_image;
                 $this->response(array("status" => "100", "userdata" => $userdata, "message" => "You have logged in successfully"));
             } else {
                 $this->response(array("status" => "401", "message" => "You have entered incorrect Password"));
@@ -67,7 +84,23 @@ class Api extends REST_Controller {
         $this->db->set($postdata);
         $this->db->update('app_user');
         $postdata["id"] = $user_id;
-        $this->response(array("status" => "200", "userdata" => $postdata, "message" => "Profile updated successfully"));
+
+        $this->db->where("id", $user_id);
+        $query = $this->db->get('app_user');
+        $userdata = $query->row_array();
+
+        $imagepath = base_url() . "assets/profile_image/";
+        if (isset($postdata["profile_image"])) {
+            $userdata["profile_image"] = $postdata["profile_image"];
+        }
+        $profile_image = $userdata["profile_image"];
+        if ($profile_image) {
+            $profile_image = $imagepath . $profile_image;
+        } else {
+            $profile_image = $imagepath . "default.png";
+        }
+        $userdata["profile_image"] = $profile_image;
+        $this->response(array("status" => "200", "userdata" => $userdata, "message" => "Profile updated successfully"));
     }
 
     function getCardQr_get($stock_id) {
@@ -175,7 +208,7 @@ class Api extends REST_Controller {
                 $productobj["category_nav"] = $category["category_string"];
             }
 
-            $productobj["price"] = number_format($productobj["price"], 2, '.', '');
+            $productobj["price"] = "INR " . number_format($productobj["price"], 2, '.', '');
 
             array_push($finallist, $productobj);
         }
@@ -185,28 +218,35 @@ class Api extends REST_Controller {
 
     function getUserPoints_get($user_id) {
         $returndata = $this->Product_model->getUserPoints($user_id);
+        $this->db->select("sum(points) as total, sum(paid_amount) as paid");
+        $this->db->where("user_id", $user_id);
+        $query = $this->db->get("product_rewards_request");
+        $rcarddata = $query->row_array();
+        $returndata["paid"] = $rcarddata["paid"];
         $this->response($returndata);
     }
 
     function getUserRewardCard_get($user_id, $plimit = 0) {
         $limit = 20;
         $returndata = $this->Product_model->getUserPoints($user_id);
-        
-        $this->db->select("sum(points) as total");
+
+        $this->db->select("sum(points) as total, sum(paid_amount) as paid");
         $this->db->where("user_id", $user_id);
         $query = $this->db->get("product_rewards_request");
         $rcarddata = $query->row_array();
-        
+
         $cardtotal = $rcarddata["total"];
-        
-        $totalpoints = $returndata["totalremain"]-$cardtotal;
-        
+        $paid_amount = $rcarddata["paid"];
+
+        $totalpoints = $returndata["totalremain"] - $cardtotal;
+
         $remains = $totalpoints % $limit;
         $blocklimit = ($totalpoints - $remains) / $limit;
-        $pointarray = array("limit" => $limit, "total_points" => $totalpoints, "points" => [], "extra_points" => $remains, "remains" => $limit - $remains);
+        $pointarray = array("limit" => $limit, "total_points" => $totalpoints, "points" => [], "paid_amount" => $paid_amount, "extra_points" => $remains, "remains" => $limit - $remains);
 
         $this->db->where("user_id", $user_id);
-        $this->db->limit( 20, $plimit);
+        $this->db->limit(20, $plimit);
+        $this->db->order_by("id desc");
         $query = $this->db->get("product_rewards_request");
         $resultdata = $query->result_array();
 
@@ -220,14 +260,14 @@ class Api extends REST_Controller {
             );
             array_push($pointarray["points"], $temparray);
         }
-     
+
         foreach ($resultdata as $key => $value) {
             $temparray = array(
                 "date" => $value["date"],
                 "time" => $value["time"],
                 "status" => $value["status"],
                 "points" => $value["points"],
-                "amount" => ""
+                "amount" => "INR " . $value["paid_amount"] . ".00",
             );
             array_push($pointarray["points"], $temparray);
         }
@@ -251,6 +291,21 @@ class Api extends REST_Controller {
         );
         $this->db->insert("product_rewards_request", $reward_array);
         $this->response($postdata);
+    }
+
+    function fileupload_post() {
+
+        $ext1 = explode('.', $_FILES['file']['name']);
+        $ext = strtolower(end($ext1));
+        $filename = $type . rand(1000, 10000);
+
+        $actfilname = $_FILES['file']['name'];
+
+        $filelocation = "assets/profile_image/";
+        move_uploaded_file($_FILES["file"]['tmp_name'], $filelocation . $actfilname);
+
+
+        $this->response(array("status" => "200"));
     }
 
 }
