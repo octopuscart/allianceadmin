@@ -222,7 +222,7 @@ class Api extends REST_Controller {
         $this->db->where("user_id", $user_id);
         $query = $this->db->get("product_rewards_request");
         $rcarddata = $query->row_array();
-        $returndata["paid"] = $rcarddata["paid"];
+        $returndata["paid"] = $rcarddata["paid"] ? $rcarddata["paid"]:0;
         $this->response($returndata);
     }
 
@@ -236,7 +236,7 @@ class Api extends REST_Controller {
         $rcarddata = $query->row_array();
 
         $cardtotal = $rcarddata["total"];
-        $paid_amount = $rcarddata["paid"];
+        $paid_amount = $rcarddata?$rcarddata["paid"]:0;
 
         $totalpoints = $returndata["totalremain"] - $cardtotal;
 
