@@ -234,9 +234,16 @@ class Api extends REST_Controller {
         $this->db->where("user_id", $user_id);
         $query = $this->db->get("product_rewards_request");
         $rcarddata = $query->row_array();
+        
+         $this->db->select("sum(points) as total, sum(paid_amount) as paid");
+        $this->db->where("user_id", $user_id);
+        $this->db->where("status", "Waiting");
+        $query = $this->db->get("product_rewards_request");
+        $rcarddata2 = $query->row_array();
 
-        $cardtotal = $rcarddata["total"];
+        $cardtotal = $rcarddata2["total"];
         $paid_amount = $rcarddata?$rcarddata["paid"]:0;
+
 
         $totalpoints = $returndata["totalremain"] - $cardtotal;
 
