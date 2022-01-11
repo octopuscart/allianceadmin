@@ -28,6 +28,7 @@ class Api extends REST_Controller {
         if ($userdata) {
             $this->response(array("status" => "401", "message" => "Email or mobile no. already registered"));
         } else {
+            $postdata["rcode"] = "AL".rand(1000,9999);
             $this->db->insert("app_user", $postdata);
             $insert_id = $this->db->insert_id();
             $postdata["id"] = $insert_id;
