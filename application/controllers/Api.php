@@ -25,10 +25,16 @@ class Api extends REST_Controller {
         $this->db->or_where("contact_no", $mobile_no);
         $query = $this->db->get('app_user');
         $userdata = $query->row_array();
+        $checkrcode = $postdata["rcode"];
+        $postdata["rcode_connect"] = "";
+        if ($checkrcode) {
+            $postdata["rcode_connect"] = $checkrcode;
+        }
+
         if ($userdata) {
             $this->response(array("status" => "401", "message" => "Email or mobile no. already registered"));
         } else {
-            $postdata["rcode"] = "AL".rand(1000,9999);
+            $postdata["rcode"] = "AL" . rand(1000, 9999);
             $this->db->insert("app_user", $postdata);
             $insert_id = $this->db->insert_id();
             $postdata["id"] = $insert_id;
@@ -235,8 +241,8 @@ class Api extends REST_Controller {
         $this->db->where("user_id", $user_id);
         $query = $this->db->get("product_rewards_request");
         $rcarddata = $query->row_array();
-        
-   
+
+
 
         $this->db->select("sum(points) as total, sum(paid_amount) as paid");
         $this->db->where("user_id", $user_id);
@@ -245,7 +251,7 @@ class Api extends REST_Controller {
         $rcarddata2 = $query->row_array();
 
         $cardtotal = $rcarddata2["total"];
-        $paid_amount = $rcarddata["paid"] ?$rcarddata["paid"] : 0;
+        $paid_amount = $rcarddata["paid"] ? $rcarddata["paid"] : 0;
 
 
         $totalpoints = $returndata["totalremain"] - $cardtotal;
@@ -320,7 +326,7 @@ class Api extends REST_Controller {
 
     function kycRequest_post() {
         $postdata = $this->post();
-        $returndata = array("status" => "100","kycdata" => array("user_id" => "1",
+        $returndata = array("status" => "100", "kycdata" => array("user_id" => "1",
                 "status" => "In Review",
                 "date" => Date("Y-m-d"),
                 "time" => Date("H:m:s A"),));
@@ -328,14 +334,14 @@ class Api extends REST_Controller {
     }
 
     function kycStatus_get($user_id) {
-     
-        $returndata = array("status" => "100","kycdata" => array("user_id" => "1",
+
+        $returndata = array("status" => "100", "kycdata" => array("user_id" => "1",
                 "status" => "In Review",
                 "date" => Date("Y-m-d"),
                 "time" => Date("H:m:s A"),));
         $this->response($returndata);
-    }    
-    
+    }
+
 }
 
 ?>
