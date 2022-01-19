@@ -15,7 +15,7 @@ $this->load->view('layout/topmenu');
     <!-- begin vertical-box -->
     <div class="vertical-box">
         <!-- begin vertical-box-column -->
-        
+
         <!-- end vertical-box-column -->
         <!-- begin vertical-box-column -->
         <div class="vertical-box-column">
@@ -24,80 +24,41 @@ $this->load->view('layout/topmenu');
             <div class="wrapper">
                 <div class="p-30 bg-white">
                     <!-- begin  form -->
-                   
+
                     <h2>Add Slider</h2>
 
-                   
-                    <form action="#" method="post" enctype="multipart/form-data">
-                
-                        <!-- begin email to -->
-                       <div class="row">
-                            <div class="col-lg-6 col-sm-12">
-                                <label class="control-label">First Line Detail:</label>
-                                <div class="m-b-15">
-                                    <textarea  class="textarea form-control" id="wysihtml5" placeholder="Enter text ..." rows="8" name="line1" required=""></textarea>
-                                </div>
-                                <!-- end email subject -->
-                                <!-- begin email content -->
-                                <label class="control-label">Button Title</label>
-                                <div class="m-b-15">
-                                   <input type="text" class="form-control" name="btn_title" required="" />
-                                </div>
-                                <label class="control-label">Active Date:</label>
-                                <div class="m-b-15">
-                                   <input type="date" class="form-control" name="date" required="" />
-                                </div>
-                                <label class="control-label">Index:</label>
-                                <div class="m-b-15">
-                                   <input type="index" class="form-control" name="index" required="" />
-                                </div>
-                                <label class="control-label">Add Slide Image:</label>
-                                <div class="m-b-15">
-                                  <div class="btn-group" role="group" aria-label="..." style="    width: 100%;">
-                                    <span class="btn btn-success col fileinput-button" >
-                                        <i class="fa fa-plus"></i>
-                                        <span>Add files...</span>
-                                        <input type="file" name="picture" required="">
-                                    </span>
 
-                                   </div>
+                    <form action="#" method="post" enctype="multipart/form-data">
+
+                        <!-- begin email to -->
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="thumbnail">
+
+                                    <div class="profile-image" style="background: url(<?php echo base_url(); ?>assets/emoji/user.png); background-size: cover;">
+                                        <img src='' style="width: 100%;   height: auto;" />
+                                        <i class="fa fa-user hide"></i>
+                                    </div>                            <div class="caption">
+                                        <div class="form-group">
+                                            <label for="image1">Upload Primary Image</label>
+                                            <input type="file" name="picture" file-model="filename" required="" />           
+                                        </div>
+                                        <button type="submit"  name="submit_data"  class="btn btn-warning" >Update <i class="fa fa-upload"></i></button>
+
+                                    </div>  
                                 </div>
-                                 
+                              
+
 
                             </div>
-                            <div class="col-lg-6 col-sm-12">
-                            <label class="control-label">Second Line Detail:</label>
-                                <div class="m-b-15">
-                                    <textarea  class="textarea form-control" id="wysihtml5" placeholder="Enter text ..." rows="8" name="line2" required=""></textarea>
-                                 </div>
-                            <label class="control-label">Button Link</label>
-                                <div class="m-b-15">
-                                   <input type="link" class="form-control" name="btn_link" required="" />
-                                </div> 
-                            <label class="control-label">Active Time:</label>
-                                <div class="m-b-15">
-                                   <input type="time" class="form-control" name="time" required="" />
-                                </div>          
-    
-                            <label class="control-label">Status:</label>
-                                <div class="m-b-15">
-                                   <input type="radio"  name="status" value="Active" required="" />  Active <br>
-                                   <input type="radio"  name="status" value="Block" required="" />  Block
-                                </div>  
-                            
-                           </div>
-                           
-                       </div>
-                    
 
-                        <!-- end email content -->
-                        <div class="colspan-2">
-                        <button type="submit" name="submit_data" class="btn btn-primary p-l-40 p-r-40 " >Submit</button>
 
                         </div>
+
+
                     </form>
-                  
-    
+
+
                 </div>
             </div>
             <!-- end wrapper -->
@@ -113,11 +74,11 @@ $this->load->view('layout/topmenu');
 $this->load->view('layout/footer');
 ?>
 <script>
-    function changeCategory(cat_name, cat_id){
-          $("#category_name").text(cat_name);
-          $("#category_id").val(cat_id);
-}
-    
+    function changeCategory(cat_name, cat_id) {
+        $("#category_name").text(cat_name);
+        $("#category_id").val(cat_id);
+    }
+
     $(function () {
 
 

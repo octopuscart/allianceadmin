@@ -39,7 +39,7 @@ $this->load->view('layout/topmenu');
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Plumbers Reports
-                   
+
                 </h3>
                 <div class="panel-tools">
 
@@ -64,18 +64,19 @@ $this->load->view('layout/topmenu');
 
                                     <th style="width: 150px;">Contact No.</th>
                                     <th style="width: 100px;">Address </th>
-                                    <th style="width: 150px;">Life Events </th>
+                                    <th style="width: 150px;">Request Date/Time </th>
 
-                                    <th style="width: 100px;">Dealer</th>
-                                    <th style="width: 75px;">Distributor</th>
+                                    <th style="width: 100px;">Document Type</th>
+                                    <th style="width: 75px;">Image</th>
+                                    <th style="width: 75px;">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                if (count($users)) {
+                                if (count($userskyc)) {
 
                                     $count = 1;
-                                    foreach ($users as $key => $value) {
+                                    foreach ($userskyc as $key => $value) {
                                         ?>
                                         <tr>
                                             <td><?php echo $count; ?></td>
@@ -83,7 +84,7 @@ $this->load->view('layout/topmenu');
                                             <td>
 
 
-                                                <img src = '<?php echo base_url(); ?>assets/<?php echo $value->image ? "profile_image/" . $value->image : "emoji/user.png"; ?>' alt = "" class = "media-object rounded-corner" style = "    width: 30px;" />
+                                                <img src = '<?php echo base_url(); ?>assets/<?php echo $value["user"]->profile_image ? "profile_image/" . $value["user"]->profile_image : "emoji/user.png"; ?>' alt = "" class = "media-object rounded-corner" style = "    width: 30px;" />
 
 
 
@@ -98,7 +99,7 @@ $this->load->view('layout/topmenu');
                                                                 <i class="fa fa-user fa-stack-1x fa-inverse"></i>
                                                             </span>
                                                         </td>
-                                                        <td><?php echo $value->name; ?></td>
+                                                        <td><?php echo $value["user"]->name; ?></td>
                                                     </tr>
                                                     <tr >
                                                         <td style="width: 40px;text-align: center;">
@@ -107,7 +108,7 @@ $this->load->view('layout/topmenu');
                                                                 <i class="fa fa-envelope   fa-inverse"></i>
                                                             </span>
                                                         </td>
-                                                        <td><?php echo $value->email; ?></td>
+                                                        <td><?php echo $value["user"]->email; ?></td>
                                                     </tr>
                                                 </table>
                                             </td>
@@ -120,7 +121,7 @@ $this->load->view('layout/topmenu');
                                                             <img src="<?php echo base_url(); ?>assets/emoji/call.png" style="height:20px" />
                                                         </td>
                                                         <td>
-                                                            <?php echo $value->contact_no; ?>
+                                                            <?php echo $value["user"]->contact_no; ?>
                                                         </td>
                                                     </tr>
                                                     <tr >
@@ -128,7 +129,7 @@ $this->load->view('layout/topmenu');
                                                             <img src="<?php echo base_url(); ?>assets/emoji/wa.png" style="height:20px" />
                                                         </td>
                                                         <td>
-                                                            <?php echo $value->wp_no; ?>
+                                                            <?php echo $value["user"]->wp_no; ?>
                                                         </td>
                                                     </tr>
                                                     <tr >
@@ -136,7 +137,7 @@ $this->load->view('layout/topmenu');
                                                             <img src="<?php echo base_url(); ?>assets/emoji/paytm.png" style="height:20px" />
                                                         </td>
                                                         <td>
-                                                            <?php echo $value->paytm_no; ?>
+                                                            <?php echo $value["user"]->paytm_no; ?>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -147,46 +148,44 @@ $this->load->view('layout/topmenu');
                                             <td>
                                                 <span class="">
 
-                                                    <?php echo $value->address; ?><br/>
-                                                    <?php echo $value->city; ?>, <?php echo $value->district; ?>, <?php echo $value->state; ?>
+                                                    <?php echo $value["user"]->address; ?><br/>
+                                                    <?php echo $value["user"]->city; ?>, <?php echo $value["user"]->district; ?>, <?php echo $value["user"]->state; ?>
                                                 </span>
                                             </td>
-                                            <td>
-                                                <table class="minitable">
-                                                    <tr>
-                                                        <td>
-                                                            <b>Birth Date</b><br/>
-                                                            <?php echo $value->dob; ?>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <b>Mrg. Anniversary</b><br/>
-                                                            <?php echo $value->doa; ?>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-
-
-                                            </td>
+                                           
                                             <td>
                                                 <span class="">
 
-                                                    <?php echo $value->dealer_firm_name; ?>
+                                                    <?php echo $value["date"]; ?>
                                                     <br/>
-                                                    <?php echo $value->dealer_mob; ?>
+                                                    <?php echo $value["time"]; ?>
+
                                                 </span>
+                                            </td>
+                                             <td>
+
+                                                <?php echo $value["doc_type"]; ?>
+
+
+                                            </td>
+                                            <td>
+
+
+                                                <img src = '<?php echo base_url(); ?>assets/<?php echo $value["doc_image"] ? "profile_image/" . $value["doc_image"] : "emoji/user.png"; ?>' alt = "" class = "media-object " style = "    width: 30px;" />
+
+
+
                                             </td>
 
 
                                             <td>
                                                 <span class="">
-                                                    <?php echo $value->distributor_name; ?>
+                                                    <?php echo $value["status"]; ?>
                                                 </span>
                                             </td>
 
                                             <td>
-                                                <a href="<?php echo site_url('AppUser/user_details/' . $value->id); ?>" class="btn btn-danger"><i class="fa fa-eye "></i> View</a>
+                                                <a href="<?php echo site_url('AppUser/upadatekyc/' . $value["id"]); ?>" class="btn btn-danger"><i class="fa fa-eye "></i> View</a>
                                             </td>
                                         </tr>
                                         <?php

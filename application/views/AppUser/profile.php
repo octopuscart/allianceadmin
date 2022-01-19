@@ -125,7 +125,7 @@ $this->load->view('layout/topmenu');
                                     <tr class="<?php echo $value["class"]; ?>" >
                                         <td style="width:150px" class="field"><?php echo $value["title"]; ?></td>
                                         <td>
-                                            <span id="profession" data-type="<?php echo $value["type"]; ?>" data-pk="<?php echo $userdata->id; ?>" data-name="profession" data-value="<?php echo $value["value"]; ?>" data-url="<?php echo site_url("LocalApi/updateUserClient"); ?>" data-original-title="<?php echo $value["title"]; ?>" class="m-l-5 editable editable-click" tabindex="-1" > <?php echo $value["value"]; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                            <span id="profession" data-type="<?php echo $value["type"]; ?>" data-pk="<?php echo $userdata->id; ?>" data-name="<?php echo $value["data_name"]; ?>" data-value="<?php echo $value["value"]; ?>" data-url="<?php echo site_url("LocalApi/updateUserClient"); ?>" data-original-title="<?php echo $value["title"]; ?>" class="m-l-5 editable editable-click" tabindex="-1" > <?php echo $value["value"]; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                         </td>
                                     </tr>
                                     <?php
@@ -165,7 +165,7 @@ $this->load->view('layout/topmenu');
                                     <tr class="<?php echo $value["class"]; ?>">
                                         <td class="field"><?php echo $value["title"]; ?></td>
                                         <td>
-                                            <span id="profession" data-type="<?php echo $value["type"]; ?>" data-pk="<?php echo $userdata->id; ?>" data-name="profession" data-value="<?php echo $value["value"]; ?>" data-url="<?php echo site_url("LocalApi/updateUserClient"); ?>" data-original-title="<?php echo $value["title"]; ?>" class="m-l-5 editable editable-click" tabindex="-1" > <?php echo $value["value"]; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                            <span id="profession" data-type="<?php echo $value["type"]; ?>" data-pk="<?php echo $userdata->id; ?>" data-name="<?php echo $value["data_name"]; ?>" data-value="<?php echo $value["value"]; ?>" data-url="<?php echo site_url("LocalApi/updateUserClient"); ?>" data-original-title="<?php echo $value["title"]; ?>" class="m-l-5 editable editable-click" tabindex="-1" > <?php echo $value["value"]; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                         </td>
                                     </tr>
                                     <?php

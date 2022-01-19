@@ -32,15 +32,11 @@ $this->load->view('layout/topmenu');
                         <thead>
                             <tr>
                             <th scope="col">Sr. no.</th>
-                            <th scope="col">Line1</th>
-                            <th scope="col">Line2</th>
-                            <th scope="col">Button Title</th>
-                            <th scope="col">Button Link</th>
+                         
                             <th scope="col">Image</th>
-                            <th scope="col">Status</th>
+                       
                             <th scope="col ">Index</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Time</th>
+                    
                             <th scope="col">Action</th>
                             
                              </tr>
@@ -49,10 +45,7 @@ $this->load->view('layout/topmenu');
                             <?php $i=1; foreach ($slide_data as $key => $values) {?>
                             <tr>
                             <th scope="row"><?php echo $i++; ?></th>
-                            <td><?php echo $values['line_1']; ?></td>
-                            <td><?php echo $values['line_2']; ?></td>
-                            <td><?php echo $values['button_title']; ?></td>
-                            <td><?php echo $values['button_link']; ?></td>
+                    
                             <td>
                                <?php  if ($values['image'] != "" && file_exists('./assets/slider_images/'.$values['image'])) {?>
 
@@ -60,14 +53,12 @@ $this->load->view('layout/topmenu');
                                    <?php }?>
                                    <?php echo $values['image'];?>
                             </td>
-                            <td><?php echo $values['status']; ?></td>
+                       
                             <td><?php echo $values['index']; ?></td>
-                            <td><?php echo $values['active_date']; ?></td>
-                            <td><?php echo $values['active_time']; ?></td>
+                  
                             
                             <td>
-                                <a href="<?php echo site_url("CMS/SliderEdit/"). $values['id'];?>" class="btn btn-sm btn-success"> <i class="fa fa-edit"></i> </a>
-                                <a href="<?php echo site_url("CMS/deleteSlide/"). $values['id'];?>" class="btn btn-sm btn-danger"> <i class="fa fa-trash"></i> </a>
+                                <a href="<?php echo site_url("CMS/deleteSlide/"). $values['id'];?>" class="btn btn-sm btn-danger"> <i class="fa fa-trash"></i> Delete</a>
                             </td>
                             
                             </tr>

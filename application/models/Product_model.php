@@ -208,11 +208,16 @@ where pa.product_id=$product_id ";
             } else {
                 $debitsum += $pvalue["points"];
                 array_push($debititList, $pvalue);
-                $pvalue["product"] =  "Points have been redeemed.";
+                $pvalue["product"] = "Points have been redeemed.";
             }
             array_push($finallist, $pvalue);
         }
-        return array("pointlist" => $finallist, "credit" => $creditsum, "debitsum" => $debitsum, "totalremain" => ($creditsum - $debitsum));
+        $this->db->select("sum(points) as total, sum(paid_amount) as paid");
+        $this->db->where("user_id", $user_id);
+        $query = $this->db->get("product_rewards_request");
+        $rcarddata = $query->row_array();
+
+        return array("pointlist" => $finallist, "paid" => $rcarddata["paid"] ? $rcarddata["paid"] : 0, "credit" => $creditsum, "debitsum" => $debitsum, "totalremain" => ($creditsum - $debitsum));
     }
 
 }

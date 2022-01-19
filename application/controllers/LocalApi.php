@@ -41,7 +41,7 @@ class LocalApi extends REST_Controller {
             $data = array($fieldname => $value);
             $this->db->set($data);
             $this->db->where("id", $pk_id);
-            $this->db->update("admin_users", $data);
+            $this->db->update("app_user", $data);
            
         }
     }

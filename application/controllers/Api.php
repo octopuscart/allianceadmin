@@ -34,9 +34,16 @@ class Api extends REST_Controller {
         if ($userdata) {
             $this->response(array("status" => "401", "message" => "Email or mobile no. already registered"));
         } else {
-            $postdata["rcode"] = "AL" . rand(1000, 9999);
+            $postdata["rcode"] = "";
             $this->db->insert("app_user", $postdata);
             $insert_id = $this->db->insert_id();
+
+            $rcode = "AL" . rand(1000, 9999) . "" . $insert_id;
+            $rcodea = array("rcode" => ($rcode),);
+            $this->db->set($rcodea);
+            $this->db->where("id", $insert_id);
+            $this->db->update("app_user");
+            $postdata["rcode"] = $rcode;
             $postdata["id"] = $insert_id;
             if ($insert_id) {
                 $imagepath = base_url() . "assets/profile_image/";
@@ -225,11 +232,7 @@ class Api extends REST_Controller {
 
     function getUserPoints_get($user_id) {
         $returndata = $this->Product_model->getUserPoints($user_id);
-        $this->db->select("sum(points) as total, sum(paid_amount) as paid");
-        $this->db->where("user_id", $user_id);
-        $query = $this->db->get("product_rewards_request");
-        $rcarddata = $query->row_array();
-        $returndata["paid"] = $rcarddata["paid"] ? $rcarddata["paid"] : 0;
+      
         $this->response($returndata);
     }
 
@@ -326,19 +329,27 @@ class Api extends REST_Controller {
 
     function kycRequest_post() {
         $postdata = $this->post();
-        $returndata = array("status" => "100", "kycdata" => array("user_id" => "1",
-                "status" => "In Review",
-                "date" => Date("Y-m-d"),
-                "time" => Date("H:m:s A"),));
+        $kycdata = array(
+            "doc_type" => $postdata["doc_type"],
+            "doc_image" => $postdata["doc_image"],
+            "user_id" => $postdata["user_id"],
+            "status" => "In Review",
+            "date" => Date("Y-m-d"),
+            "time" => Date("H:m:s A"),
+        );
+        $this->db->insert("app_user_kyc", $kycdata);
+        $returndata = array(
+            "status" => "100",
+            "kycdata" => $kycdata);
+
         $this->response($returndata);
     }
 
     function kycStatus_get($user_id) {
-
-        $returndata = array("status" => "100", "kycdata" => array("user_id" => "1",
-                "status" => "In Review",
-                "date" => Date("Y-m-d"),
-                "time" => Date("H:m:s A"),));
+        $this->db->where("user_id", $user_id);
+        $query = $this->db->get("app_user_kyc");
+        $kycdata = $query->row_array();
+        $returndata = array("status" => $kycdata ? "100" : "300", "kycdata" => $kycdata);
         $this->response($returndata);
     }
 

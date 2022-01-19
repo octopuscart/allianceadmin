@@ -13,8 +13,9 @@ $order_menu = array(
     "icon" => "fa fa-gift",
     "active" => "",
     "sub_menu" => array(
-        "Redeem Request" => site_url("Order/rewardrequests"),
-        "Reward Analytics" => site_url("Order/index"),
+        "Redeem Request" => site_url("RewardsManagement/index"),
+        "Payments" => site_url("RewardsManagement/paid"),
+//        "Reward Analytics" => site_url("Order/index"),
     ),
 );
 array_push($menu_control, $order_menu);
@@ -56,6 +57,7 @@ $client_menu = array(
     "active" => "",
     "sub_menu" => array(
         "Plumbers Reports" => site_url("AppUser/index"),
+        "KYC Reports" => site_url("AppUser/kyc_report"),
     ),
 );
 array_push($menu_control, $client_menu);

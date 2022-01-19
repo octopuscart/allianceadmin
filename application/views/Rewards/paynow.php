@@ -24,61 +24,15 @@ $this->load->view('layout/topmenu');
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header"><?php echo $userdata->name; ?> <small><?php echo $userdata->contact_no; ?> </small></h1>
+    <h1 class="page-header">Payment Update<small> ID#:<?php echo $userkycdata->id; ?> </small></h1>
     <!-- end page-header -->
     <!-- begin profile-container -->
     <div class="profile-container" style="background: #d2cbcb;">
         <!-- begin profile-section -->
         <div class="profile-section" style="background: #fff;">
-            <!-- begin profile-left -->
-            <div class="profile-left">
-                <!-- begin profile-image -->
 
-                <!-- end profile-image -->
-                <div class="m-b-10">
-                    <form action="#" method="post" enctype="multipart/form-data">
-
-
-                        <div class="thumbnail">
-
-                            <div class="profile-image" style="background: url(<?php echo base_url(); ?>assets/emoji/user.png); background-size: cover;">
-                                <img src='<?php echo base_url(); ?>assets/profile_image/<?php echo $userdata->profile_image; ?>' style="width: 100%;   height: auto;
-                                     " />
-                                <i class="fa fa-user hide"></i>
-                            </div>                            <div class="caption">
-                                <div class="form-group">
-                                    <label for="image1">Upload Primary Image</label>
-                                    <input type="file" name="picture" file-model="filename" required="" />           
-                                </div>
-                                <button type="submit" name="submit" class="btn btn-warning" >Update <i class="fa fa-upload"></i></button>
-
-                            </div>
-                        </div>
-                        <div class="btn-group" role="group" aria-label="..." style="    width: 100%;">
-
-
-                        </div>
-                    </form>
-
-
-
-                </div>
-                <!-- begin profile-highlight -->
-                <div class="profile-highlight">
-                    <h4><i class="fa fa-cog"></i> Settings</h4>
-                    <div class="checkbox m-b-5 m-t-0" >
-                        <label><input type="checkbox" id="edit_toggle" /> Edit Profile Information</label>
-                    </div>
-
-                    <div class="checkbox m-b-0">
-                        <button class="btn btn-xs btn-link" data-toggle="modal" data-target="#changePassword"><i class="fa fa-lock"></i> Change Your Password</button>
-                    </div>
-                </div>
-                <!-- end profile-highlight -->
-            </div>
-            <!-- end profile-left -->
             <!-- begin profile-right -->
-            <div class="profile-right">
+            <div class="col-md-6">
                 <!-- begin profile-info -->
                 <div class="profile-info">
                     <!-- begin table -->
@@ -123,68 +77,128 @@ $this->load->view('layout/topmenu');
                                 foreach ($datacblock as $key => $value) {
                                     ?>
                                     <tr class="<?php echo $value["class"]; ?>" >
-                                        <td style="width:150px" class="field"><?php echo $value["title"]; ?></td>
+                                        <td style="width:150px" class=""><?php echo $value["title"]; ?></td>
                                         <td>
-                                            <span id="profession" data-type="<?php echo $value["type"]; ?>" data-pk="<?php echo $userdata->id; ?>" data-name="profession" data-value="<?php echo $value["value"]; ?>" data-url="<?php echo site_url("LocalApi/updateUserClient"); ?>" data-original-title="<?php echo $value["title"]; ?>" class="m-l-5 editable editable-click" tabindex="-1" > <?php echo $value["value"]; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                            <?php echo $value["value"]; ?>
                                         </td>
                                     </tr>
                                     <?php
                                 }
                                 ?>
-
-
-
-                                <tr class="highlight">
-                                    <td class="field">Birth Date</td>
-                                    <td>
-                                        <a href="#" id="dob" data-type="combodate"  data-name="dob" data-value="<?php echo $userdata->dob; ?>" data-format="YYYY-MM-DD" data-viewformat="DD/MM/YYYY" data-template="D / MMM / YYYY" data-pk="<?php echo $userdata->id; ?>" data-title="Select Date of birth" class="editable editable-click" data-original-title="" title="" style="background-color: rgba(0, 0, 0, 0);" data-url="<?php echo site_url("LocalApi/updateUserClient"); ?>"><?php echo $userdata->dob; ?></a>                                        
-                                        <button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
-                                    </td>
-                                </tr>
-
-                                <tr class="highlight">
-                                    <td class="field">Anniversary Date</td>
-                                    <td>
-                                        <a href="#" id="doa" data-type="combodate"  data-name="dob" data-value="<?php echo $userdata->doa; ?>" data-format="YYYY-MM-DD" data-viewformat="DD/MM/YYYY" data-template="D / MMM / YYYY" data-pk="<?php echo $userdata->id; ?>" data-title="Select Date of Anniversary" class="editable editable-click" data-original-title="" title="" style="background-color: rgba(0, 0, 0, 0);" data-url="<?php echo site_url("LocalApi/updateUserClient"); ?>"><?php echo $userdata->doa; ?></a>                                        
-                                        <button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
-                                    </td>
-                                </tr>
-
-
-                                <?php
-                                $datacblock = [
-                                    array("title" => "Dealer Firm Name", "value" => $userdata->dealer_firm_name, "type" => "text", "data_name" => "dealer_firm_name", "class" => "highlight"),
-                                    array("title" => "Dealer Contact No.", "value" => $userdata->dealer_mob, "type" => "text", "data_name" => "dealer_mob", "class" => "highlight"),
-                                    array("title" => "Distributor Name", "value" => $userdata->distributor_name, "type" => "text", "data_name" => "distributor_name", "class" => "highlight"),
-                                    array("title" => "State", "value" => $userdata->state, "type" => "text", "data_name" => "state", "class" => "highlight"),
-                                    array("title" => "District", "value" => $userdata->district, "type" => "text", "data_name" => "district", "class" => "highlight"),
-                                    array("title" => "City", "value" => $userdata->city, "type" => "text", "data_name" => "city", "class" => "highlight"),
-                                ];
-                                foreach ($datacblock as $key => $value) {
-                                    ?>
-                                    <tr class="<?php echo $value["class"]; ?>">
-                                        <td class="field"><?php echo $value["title"]; ?></td>
-                                        <td>
-                                            <span id="profession" data-type="<?php echo $value["type"]; ?>" data-pk="<?php echo $userdata->id; ?>" data-name="profession" data-value="<?php echo $value["value"]; ?>" data-url="<?php echo site_url("LocalApi/updateUserClient"); ?>" data-original-title="<?php echo $value["title"]; ?>" class="m-l-5 editable editable-click" tabindex="-1" > <?php echo $value["value"]; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
-                                        </td>
-                                    </tr>
-                                    <?php
-                                }
-                                ?>
-
-
-
-
 
 
                             </tbody>
                         </table>
+
+                        <div class="">
+                            <div class="col-md-6 text-center">
+                                <div class="widget widget-stats bg-blue">
+                                    <div class="stats-icon"><i class="fa fa-trophy"></i></div>
+                                    <div class="stats-info">
+                                        <h4>Total Points</h4>
+                                        <p><?php echo $points["totalremain"] ?></p>	
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <div class="widget widget-stats bg-red">
+                                    <div class="stats-icon"><i class="fa fa-trophy"></i></div>
+                                    <div class="stats-info">
+                                        <h4>Amount Paid</h4>
+                                        <p><?php echo $points["paid"] ?></p>	
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                     <!-- end table -->
                 </div>
                 <!-- end profile-info -->
             </div>
             <!-- end profile-right -->
+
+
+            <!-- begin profile-left -->
+            <div class="col-md-6">
+                <!-- begin profile-image -->
+
+                <!-- end profile-image -->
+                <div class="m-b-10">
+                    <form action="#" method="post" enctype="multipart/form-data">
+                        <div class="well well-sm " style="margin-top: 20px;">
+                            <table class="table">
+                                <tr>
+                                    <th>Request ID#</th>
+                                    <td><?php echo $userkycdata->id; ?></td>
+
+                                </tr>
+                                <tr>
+                                    <th>Points</th>
+                                    <td><?php echo $userkycdata->points; ?></td>
+
+                                </tr>
+                                <tr>
+                                    <th>Paid Amount</th>
+                                    <td>
+                                        <input type="number" min="0" class="form-control" value="" name="paid_amount" placeholder="Enter Payable Amount" required="">
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th>Payment Mode</th>
+                                    <td>
+                                        <select name="payment_id" class="form-control" required="">
+                                            <option selected="">PayTM</option>
+                                            <option>Google Pay</option>
+                                            <option>PhonePay</option>
+                                            <option>Bank Transfer</option>
+                                            <option>Other</option>
+                                        </select>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th>Txn. ID#</th>
+                                    <td>
+                                        <input type="text" value="" name="txn_id" class="form-control" placeholder="Enter Txn ID. Here" required="">
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th>Payment Remark</th>
+                                    <td>
+                                        <textarea type="text" value="" name="remark" class="form-control" placeholder="Enter Payment Remark"></textarea>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td><?php echo $userkycdata->status; ?></td>
+
+                                </tr>
+                                <tr>
+                                    <th>Request Date/Time</th>
+                                    <td><?php echo $userkycdata->date; ?> <?php echo $userkycdata->time; ?></td>
+
+                                </tr>
+
+                            </table>
+
+                            <br/>
+                            <button type="submit" class="btn btn-success" name="status" value="Approved"><i class="fa fa-check"></i> Approve</button>
+
+                        </div>
+
+
+                    </form>
+                </div>
+
+            </div>
+            <!-- end profile-left -->
         </div>
         <!-- end profile-section -->
 
@@ -242,23 +256,23 @@ $this->load->view('layout/footer');
 
 
 <script>
-$(function () {
+    $(function () {
 <?php
 $checklogin = $this->session->flashdata('checklogin');
 if ($checklogin['show']) {
     ?>
-        $.gritter.add({
-            title: '<?php echo $checklogin['title']; ?>',
-            text: '<?php echo $checklogin['text']; ?>',
-            image: '<?php echo base_url(); ?>assets/emoji/<?php echo $checklogin['icon']; ?>',
-                        sticky: true,
-                        time: '',
-                        class_name: 'my-sticky-class'
-                    });
+            $.gritter.add({
+                title: '<?php echo $checklogin['title']; ?>',
+                text: '<?php echo $checklogin['text']; ?>',
+                image: '<?php echo base_url(); ?>assets/emoji/<?php echo $checklogin['icon']; ?>',
+                            sticky: true,
+                            time: '',
+                            class_name: 'my-sticky-class'
+                        });
     <?php
 }
 ?>
-            })
+                })
 </script>
 
 <script>

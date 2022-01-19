@@ -129,7 +129,8 @@ function truncate($str, $len) {
 
                                 </a>
                                 <h4 class="username text-ellipsis" style="float: left;width: -webkit-fill-available;">
-                                    <?php echo $uvalue['first_name']; ?> <?php echo $uvalue['last_name']; ?>
+                                    <?php echo $uvalue['name']; ?> <br/>
+                                    <span style="font-size:9px;;"><?php echo $uvalue['contact_no']; ?></span>
 
                                 </h4>
                             </li>
