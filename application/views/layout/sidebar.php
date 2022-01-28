@@ -142,6 +142,7 @@ $setting_menu = array(
     "icon" => "fa fa-cogs",
     "active" => "",
     "sub_menu" => array(
+        "Reward Settings" => site_url("Configuration/rewardSetting"),
         "System Log" => site_url("Services/systemLogReport"),
     ),
 );
