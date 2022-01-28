@@ -15,6 +15,7 @@ class StockManagement extends CI_Controller {
         $this->load->model('Product_model');
         $this->user_id = $this->session->userdata('logged_in')['login_id'];
         $this->user_type = $this->session->logged_in['user_type'];
+        //stock management
     }
 
     public function index() {
