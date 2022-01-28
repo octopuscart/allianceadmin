@@ -11,6 +11,15 @@ class Api extends REST_Controller {
         $this->load->library('session');
         $this->checklogin = $this->session->userdata('logged_in');
         $this->user_id = $this->session->userdata('logged_in')['login_id'];
+
+        $query = $this->db->get('configuration_attr');
+        $paymentattr = $query->result_array();
+        $rewardsettings = array();
+        $this->initconfiguration = array();
+        foreach ($paymentattr as $key => $value) {
+
+            $this->initconfiguration[$value['attr_key']] = $value['attr_val'];
+        }
     }
 
     public function index() {
@@ -145,24 +154,38 @@ class Api extends REST_Controller {
                         "message" => "Product already has been used."
                     ));
                 } else {
-                    $credit_points = $productobj['credit_limit'];
-                    $reward_array = array(
-                        "plumber_id" => $plumber_id,
-                        "product_id" => $productobj["id"],
-                        "serial_no" => $serial_no,
-                        "stock_id" => $serial_obj["id"],
-                        "points" => $credit_points,
-                        "points_type" => "Credit",
-                        "date" => Date("Y-m-d"),
-                        "time" => Date("H:m:s A"),
-                    );
-                    $this->db->insert("product_rewards", $reward_array);
+                    $this->db->where("serial_no", $serial_no);
+                    $query = $this->db->get('product_stock');
+                    $product_stock = $query->row();
 
-                    $this->response(array(
-                        "status" => "200",
-                        "message" => "$credit_points reward points have been credited in your account",
-                        "product_info" => $productobj
+                    if ($product_stock) {
+                      $dealer_id = $product_stock->dealer_id;
+
+                        $credit_points = $productobj['credit_limit'];
+                        $reward_array = array(
+                            "plumber_id" => $plumber_id,
+                            "product_id" => $productobj["id"],
+                            "serial_no" => $serial_no,
+                            "stock_id" => $serial_obj["id"],
+                            "points" => $credit_points,
+                            "points_type" => "Credit",
+                            "dealer_id" => $dealer_id,
+                            "date" => Date("Y-m-d"),
+                            "time" => Date("H:m:s A"),
+                        );
+                        $this->db->insert("product_rewards", $reward_array);
+
+                        $this->response(array(
+                            "status" => "200",
+                            "message" => "$credit_points reward points have been credited in your account",
+                            "product_info" => $productobj
+                        ));
+                    } else {
+                        $this->response(array(
+                        "status" => "300",
+                        "message" => "Product already has been used."
                     ));
+                    }
                 }
             } else {
                 $this->response(array("status" => "404", "message" => "Invalid Product, Please try again"));
@@ -232,39 +255,27 @@ class Api extends REST_Controller {
 
     function getUserPoints_get($user_id) {
         $returndata = $this->Product_model->getUserPoints($user_id);
-      
+
         $this->response($returndata);
     }
 
     function getUserRewardCard_get($user_id, $plimit = 0) {
-        $limit = 20;
+        $limit = $this->initconfiguration["reward_redeem_limit"];
+
         $returndata = $this->Product_model->getUserPoints($user_id);
 
-        $this->db->select("sum(points) as total, sum(paid_amount) as paid");
-        $this->db->where("user_id", $user_id);
-        $query = $this->db->get("product_rewards_request");
-        $rcarddata = $query->row_array();
+
+        $paid_amount = $returndata["paid"] ? $returndata["paid"] : 0;
 
 
-
-        $this->db->select("sum(points) as total, sum(paid_amount) as paid");
-        $this->db->where("user_id", $user_id);
-        $this->db->where("status", "Waiting");
-        $query = $this->db->get("product_rewards_request");
-        $rcarddata2 = $query->row_array();
-
-        $cardtotal = $rcarddata2["total"];
-        $paid_amount = $rcarddata["paid"] ? $rcarddata["paid"] : 0;
-
-
-        $totalpoints = $returndata["totalremain"] - $cardtotal;
+        $totalpoints = $returndata["totalremain"];
 
         $remains = $totalpoints % $limit;
         $blocklimit = ($totalpoints - $remains) / $limit;
         $pointarray = array("limit" => $limit, "total_points" => $totalpoints, "points" => [], "paid_amount" => $paid_amount, "extra_points" => $remains, "remains" => $limit - $remains);
 
         $this->db->where("user_id", $user_id);
-        $this->db->limit(20, $plimit);
+//        $this->db->limit(20, $plimit);
         $this->db->order_by("id desc");
         $query = $this->db->get("product_rewards_request");
         $resultdata = $query->result_array();
@@ -295,6 +306,7 @@ class Api extends REST_Controller {
     }
 
     function requestRedeem_post() {
+        $limit = $this->initconfiguration["reward_redeem_limit"];
         $postdata = $this->post();
         $reward_array = array(
             "points" => $postdata["rewards_point"],
@@ -309,6 +321,19 @@ class Api extends REST_Controller {
             "remark" => "",
         );
         $this->db->insert("product_rewards_request", $reward_array);
+
+//        $reward_array = array(
+//            "plumber_id" => $postdata["user_id"],
+//            "product_id" => "",
+//            "serial_no" => "",
+//            "stock_id" => "",
+//            "points" => $postdata["rewards_point"],
+//            "points_type" => "Debit",
+//            "dealer_id" => "",
+//            "date" => Date("Y-m-d"),
+//            "time" => Date("H:m:s A"),
+//        );
+//        $this->db->insert("product_rewards", $reward_array);
         $this->response($postdata);
     }
 

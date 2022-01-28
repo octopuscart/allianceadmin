@@ -45,6 +45,19 @@ class LocalApi extends REST_Controller {
            
         }
     }
+    
+     function updateDealer_post() {
+        $fieldname = $this->post('name');
+        $value = $this->post('value');
+        $pk_id = $this->post('pk');
+        if ($this->checklogin) {
+            $data = array($fieldname => $value);
+            $this->db->set($data);
+            $this->db->where("id", $pk_id);
+            $this->db->update("dealers", $data);
+           
+        }
+    }
 
     function updateUser() {
         $fieldname = $this->post('name');

@@ -188,7 +188,68 @@ $this->load->view('layout/topmenu');
         </div>
         <!-- end profile-section -->
 
+    </div>
 
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="">
+                <div class="col-md-3 text-center">
+                    <div class="widget widget-stats bg-blue">
+                        <div class="stats-icon"><i class="fa fa-trophy"></i></div>
+                        <div class="stats-info">
+                            <h4>Total Points</h4>
+                            <p><?php echo $points["totalremain"] ?></p>	
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="widget widget-stats bg-red">
+                        <div class="stats-icon"><i class="fa fa-suitcase"></i></div>
+                        <div class="stats-info">
+                            <h4>Amount Paid</h4>
+                            <p><?php echo $points["paid"] ?></p>	
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="widget widget-stats bg-yellow-darker">
+                        <div class="stats-icon"><i class="fa fa-arrow-circle-down"></i></div>
+                        <div class="stats-info">
+                            <h4>Points Credited</h4>
+                            <p><?php echo $points["credit"] ?></p>	
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="widget widget-stats bg-red-darker">
+                        <div class="stats-icon"><i class="fa fa-arrow-circle-up"></i></div>
+                        <div class="stats-info">
+                            <h4>Points Debited</h4>
+                            <p><?php echo $points["debitsum"] ?></p>	
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="table" >
+
+                <?php
+                foreach ($points["pointlist"] as $key => $value) {
+                    ?>
+                    <tr>
+                        <td><?php echo $value["points"]; ?></td>
+                        <td><?php echo $value["points_type"]; ?></td>
+                        <td><?php echo $value["product"]; ?><br/><?php echo $value["remark"]; ?></td>
+                        <td><?php echo $value["date"]; ?></td>
+
+                      
+                    </tr>
+                    <?php
+                }
+                ?>
+            </table>
+        </div>
     </div>
 
 
@@ -242,23 +303,23 @@ $this->load->view('layout/footer');
 
 
 <script>
-$(function () {
+    $(function () {
 <?php
 $checklogin = $this->session->flashdata('checklogin');
 if ($checklogin['show']) {
     ?>
-        $.gritter.add({
-            title: '<?php echo $checklogin['title']; ?>',
-            text: '<?php echo $checklogin['text']; ?>',
-            image: '<?php echo base_url(); ?>assets/emoji/<?php echo $checklogin['icon']; ?>',
-                        sticky: true,
-                        time: '',
-                        class_name: 'my-sticky-class'
-                    });
+            $.gritter.add({
+                title: '<?php echo $checklogin['title']; ?>',
+                text: '<?php echo $checklogin['text']; ?>',
+                image: '<?php echo base_url(); ?>assets/emoji/<?php echo $checklogin['icon']; ?>',
+                            sticky: true,
+                            time: '',
+                            class_name: 'my-sticky-class'
+                        });
     <?php
 }
 ?>
-            })
+                })
 </script>
 
 <script>

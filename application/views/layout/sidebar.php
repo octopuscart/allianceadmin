@@ -63,6 +63,28 @@ $client_menu = array(
 array_push($menu_control, $client_menu);
 
 
+$client_menu = array(
+    "title" => "Dealer Manegement",
+    "icon" => "fa fa-user",
+    "active" => "",
+    "sub_menu" => array(
+        "Add Dealer" => site_url("Dealers/addDealer"),
+        "Dealer Reports" => site_url("Dealers/index"),
+    ),
+);
+array_push($menu_control, $client_menu);
+
+
+$client_menu = array(
+    "title" => "QR Code Manegement",
+    "icon" => "fa fa-qrcode",
+    "active" => "",
+    "sub_menu" => array(
+        "Print QR" => site_url("StockManagement/printQR"),
+        "Print Reports" => site_url("StockManagement/orderlist"),
+    ),
+);
+array_push($menu_control, $client_menu);
 
 $slide_menu = array(
     "title" => "Slider Management",

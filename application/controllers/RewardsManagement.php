@@ -12,9 +12,16 @@ class RewardsManagement extends CI_Controller {
         parent::__construct();
         $this->load->model('User_model');
         $this->load->library('session');
-             $this->load->model('Product_model');
+        $this->load->model('Product_model');
         $this->user_id = $this->session->userdata('logged_in')['login_id'];
         $this->user_type = $this->session->logged_in['user_type'];
+        $query = $this->db->get('configuration_attr');
+        $paymentattr = $query->result_array();
+        $rewardsettings = array();
+        $this->initconfiguration = array();
+        foreach ($paymentattr as $key => $value) {
+            $this->initconfiguration[$value['attr_key']] = $value['attr_val'];
+        }
     }
 
     public function index() {
@@ -64,8 +71,6 @@ class RewardsManagement extends CI_Controller {
         $this->load->view('errors/404');
     }
 
-
-
     function paynow($rd_id) {
         $data = array();
 
@@ -81,6 +86,8 @@ class RewardsManagement extends CI_Controller {
 
         $rewardpoints = $this->Product_model->getUserPoints($userid);
         $data["points"] = $rewardpoints;
+        
+        $data["default_payment"] = $this->initconfiguration["redeem_payment_limit"];
 
 
         if (isset($_POST['status'])) {
@@ -103,7 +110,7 @@ class RewardsManagement extends CI_Controller {
                     "paid_amount" => $this->input->post('paid_amount'),
                     "txn_id" => $this->input->post('txn_id'),
                     "remark" => $this->input->post('remark'),
-                    );
+                );
                 $this->db->set($product_rewards_request);
                 $this->db->where("id", $rd_id);
                 $this->db->update("product_rewards_request");

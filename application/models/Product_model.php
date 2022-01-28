@@ -187,6 +187,51 @@ where pa.product_id=$product_id ";
     }
 
     function getUserPoints($user_id) {
+        $query = "
+            select id, date, points, points_type, remark, paid_amount, payment_status, product_id from (
+SELECT id, date, points, status as remark,  'Debit' as points_type, '' as product_id, paid_amount, payment_status FROM product_rewards_request where user_id = $user_id
+union all
+ SELECT id, date, points, serial_no as remark,'Credit' as points_type, product_id, '' as paid_amount, '' as payment_status FROM product_rewards WHERE plumber_id  = $user_id
+    ) as a order by date desc
+                ";
+
+        $queryrow = $this->db->query($query);
+        $pointhistory = $queryrow->result_array();
+        $creditList = [];
+        $debititList = [];
+        $creditsum = 0;
+        $debitsum = 0;
+        $finallist = [];
+        foreach ($pointhistory as $key => $pvalue) {
+            $this->db->where("id", $pvalue["product_id"]);
+            $query = $this->db->get('products');
+            $productobj = $query->row_array();
+
+            if ($pvalue['points_type'] == "Credit") {
+                array_push($creditList, $pvalue);
+                $creditsum += $pvalue["points"];
+                $pvalue["product"] = $productobj ? $productobj["title"] : "";
+            } else {
+                $debitsum += $pvalue["points"];
+                array_push($debititList, $pvalue);
+                if ($pvalue["remark"] == "Paid") {
+                    $amount = $pvalue["paid_amount"];
+                    $pvalue["product"] = "Payment ($amount INR) has been credited.";
+                } else {
+                    $pvalue["product"] = "Points have been redeemed.";
+                }
+            }
+            array_push($finallist, $pvalue);
+        }
+
+        $this->db->select("sum(points) as total, sum(paid_amount) as paid");
+        $this->db->where("user_id", $user_id);
+        $query = $this->db->get("product_rewards_request");
+        $rcarddata = $query->row_array();
+        return array("pointlist" => $finallist, "paid" => $rcarddata["paid"] ? $rcarddata["paid"] : 0, "credit" => $creditsum, "debitsum" => $debitsum, "totalremain" => ($creditsum - $debitsum));
+    }
+
+    function getUserPoints2($user_id) {
         $this->db->where('plumber_id', $user_id);
         $this->db->order_by("id desc");
         $query = $this->db->get('product_rewards');

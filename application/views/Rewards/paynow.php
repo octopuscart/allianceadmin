@@ -104,7 +104,7 @@ $this->load->view('layout/topmenu');
                             </div>
                             <div class="col-md-6 text-center">
                                 <div class="widget widget-stats bg-red">
-                                    <div class="stats-icon"><i class="fa fa-trophy"></i></div>
+                                    <div class="stats-icon"><i class="fa fa-suitcase"></i></div>
                                     <div class="stats-info">
                                         <h4>Amount Paid</h4>
                                         <p><?php echo $points["paid"] ?></p>	
@@ -144,7 +144,7 @@ $this->load->view('layout/topmenu');
                                 <tr>
                                     <th>Paid Amount</th>
                                     <td>
-                                        <input type="number" min="0" class="form-control" value="" name="paid_amount" placeholder="Enter Payable Amount" required="">
+                                        <input type="number" min="0" class="form-control" value="<?php echo $default_payment;?>" name="paid_amount" placeholder="Enter Payable Amount" required="">
                                     </td>
 
                                 </tr>
