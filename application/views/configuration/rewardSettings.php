@@ -46,7 +46,7 @@ $this->load->view('layout/topmenu');
                                 foreach ($settings as $key => $value) {
                                     ?>
                                     <tr class="">
-                                        <td class="field"><?php echo $value["title"]; ?></td>
+                                        <td class="field" style="width:200px;"><?php echo $value["title"]; ?></td>
                                         <td>
                                             <span id="profession" data-type="<?php echo $value["type"]; ?>" data-pk="<?php echo $value["id"];  ?>" data-name="attr_val" data-value="<?php echo $value["attr_val"]; ?>" data-url="<?php echo site_url("Configuration/updateSettings"); ?>" data-original-title="<?php echo $value["title"]; ?>" class="m-l-5 editable editable-click" tabindex="-1" > <?php echo $value["attr_val"]; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                         </td>

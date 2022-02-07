@@ -159,12 +159,15 @@ class Api extends REST_Controller {
                     $product_stock = $query->row();
 
                     if ($product_stock) {
-                      $dealer_id = $product_stock->dealer_id;
+                        $dealer_id = $product_stock->dealer_id;
+
+                        $checkreferstatus = $this->Product_model->checkPreviouseEarn($plumber_id);
 
                         $credit_points = $productobj['credit_limit'];
                         $reward_array = array(
                             "plumber_id" => $plumber_id,
                             "product_id" => $productobj["id"],
+                            "title" => $productobj["title"] . " (" . $productobj["sku"] . ")",
                             "serial_no" => $serial_no,
                             "stock_id" => $serial_obj["id"],
                             "points" => $credit_points,
@@ -175,6 +178,23 @@ class Api extends REST_Controller {
                         );
                         $this->db->insert("product_rewards", $reward_array);
 
+                        if ($checkreferstatus["status"]) {
+                            $refer_id = $checkreferstatus["connect_id"];
+                            $reward_array = array(
+                                "plumber_id" => $refer_id,
+                                "product_id" => $productobj["id"],
+                                "title" => "Points earned from referal",
+                                "serial_no" => $serial_no,
+                                "stock_id" => $serial_obj["id"],
+                                "points" => $credit_points,
+                                "points_type" => "Credit",
+                                "dealer_id" => $dealer_id,
+                                "date" => Date("Y-m-d"),
+                                "time" => Date("H:m:s A"),
+                            );
+                            $this->db->insert("product_rewards", $reward_array);
+                        }
+
                         $this->response(array(
                             "status" => "200",
                             "message" => "$credit_points reward points have been credited in your account",
@@ -182,9 +202,9 @@ class Api extends REST_Controller {
                         ));
                     } else {
                         $this->response(array(
-                        "status" => "300",
-                        "message" => "Product already has been used."
-                    ));
+                            "status" => "300",
+                            "message" => "Product already has been used."
+                        ));
                     }
                 }
             } else {
@@ -374,8 +394,24 @@ class Api extends REST_Controller {
         $this->db->where("user_id", $user_id);
         $query = $this->db->get("app_user_kyc");
         $kycdata = $query->row_array();
-        $returndata = array("status" => $kycdata ? "100" : "300", "kycdata" => $kycdata);
+        if ($kycdata) {
+            $returndata = array("status" => "100", "kycdata" => $kycdata);
+        } else {
+            $returndata = array("status" => "300", "kycdata" => $kycdata);
+        }
+
         $this->response($returndata);
+    }
+
+    function getSliderImage_get() {
+        $query = $this->db->get("settings_slider");
+        $sliderimages = $query->result_array();
+        $allslider = [];
+        foreach ($sliderimages as $key => $value) {
+            $image = base_url() . 'assets/slider_images/' . $value['image'];
+            array_push($allslider, $image);
+        }
+        $this->response($allslider);
     }
 
 }

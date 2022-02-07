@@ -188,10 +188,10 @@ where pa.product_id=$product_id ";
 
     function getUserPoints($user_id) {
         $query = "
-            select id, date, points, points_type, remark, paid_amount, payment_status, product_id from (
-SELECT id, date, points, status as remark,  'Debit' as points_type, '' as product_id, paid_amount, payment_status FROM product_rewards_request where user_id = $user_id
+            select id, date, points, points_type, remark, paid_amount, payment_status, product_id, title from (
+SELECT id, date, points, status as remark,  'Debit' as points_type, '' as product_id, '' as title, paid_amount, payment_status FROM product_rewards_request where user_id = $user_id
 union all
- SELECT id, date, points, serial_no as remark,'Credit' as points_type, product_id, '' as paid_amount, '' as payment_status FROM product_rewards WHERE plumber_id  = $user_id
+ SELECT id, date, points, serial_no as remark,'Credit' as points_type, product_id, title, '' as paid_amount, '' as payment_status FROM product_rewards WHERE plumber_id  = $user_id
     ) as a order by date desc
                 ";
 
@@ -210,7 +210,7 @@ union all
             if ($pvalue['points_type'] == "Credit") {
                 array_push($creditList, $pvalue);
                 $creditsum += $pvalue["points"];
-                $pvalue["product"] = $productobj ? $productobj["title"] : "";
+                $pvalue["product"] =$pvalue["title"];
             } else {
                 $debitsum += $pvalue["points"];
                 array_push($debititList, $pvalue);
@@ -229,6 +229,32 @@ union all
         $query = $this->db->get("product_rewards_request");
         $rcarddata = $query->row_array();
         return array("pointlist" => $finallist, "paid" => $rcarddata["paid"] ? $rcarddata["paid"] : 0, "credit" => $creditsum, "debitsum" => $debitsum, "totalremain" => ($creditsum - $debitsum));
+    }
+
+    function checkPreviouseEarn($user_id) {
+        $this->db->where('plumber_id', $user_id);
+        $this->db->order_by("id desc");
+        $query = $this->db->get('product_rewards');
+        $userpointdata = $query->result_array();
+        if ($userpointdata) {
+            return array("status" => false);
+        } else {
+            $this->db->where("id", $user_id);
+            $query = $this->db->get('app_user');
+            $userdata = $query->row_array();
+            if ($userdata["rcode_connect"]) {
+                $this->db->where("rcode", $userdata["rcode_connect"]);
+                $query = $this->db->get('app_user');
+                $userdata2 = $query->row_array();
+                if ($userdata2) {
+                    return array("status" => true, "connect_id" => $userdata2["id"]);
+                } else {
+                    return array("status" => false);
+                }
+            } else {
+                return array("status" => false);
+            }
+        }
     }
 
     function getUserPoints2($user_id) {

@@ -47,7 +47,8 @@ $this->load->view('layout/topmenu');
 
                                     </div>  
                                 </div>
-                              
+                                <h4>Slider image should be 100/50 ratio <br/>(Exp: 1000px width X 500 height)</h4>
+
 
 
                             </div>

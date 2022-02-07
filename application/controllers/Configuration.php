@@ -56,6 +56,7 @@ class Configuration extends CI_Controller {
         $settingslist = array(
             "reward_redeem_limit" => array("title" => "Reward Limit",),
             "redeem_payment_limit" => array("title" => "Payment Limit",),
+            "refer_earn_limit" => array("title" => "Refer Earn Limit",),
         );
         $this->db->where_in('attr_key', array_keys($settingslist));
         $query = $this->db->get('configuration_attr');
