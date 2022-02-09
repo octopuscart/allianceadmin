@@ -74,20 +74,7 @@ class Api extends REST_Controller {
 
     function testMessage_get($mobile_no, $otpcode) {
 //        $this->sendSMS($mobile_no, $otpcode);
-          $apiKey = ('NjYzMzU5NTA2MjM2MzI2ZjY0NGY3OTU2MzQ3NzRhNWE=');
 
-        // Message details
-        $numbers = array($mobile_no);
-        $sender = urlencode('ALPLMB');
-        $message = rawurlencode("Hi, $otpcode is your OTP to log in to Alliance Loyalty Program. We welcome you to the Alliance family.");
-
-        $numbers = implode(',', $numbers);
-
-        // Prepare data for POST request
-        $data = array('apikey' => $apiKey, 'numbers' => $numbers, "sender" => $sender, "message" => $message);
-        $curldata = $this->useCurl("https://api.textlocal.in/send?" . http_build_query($data), array(), json_encode($data));
-        $codehas = json_decode($curldata);
-//        print_r($codehas);
     }
 
     function registration_post() {
