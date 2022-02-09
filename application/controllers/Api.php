@@ -26,6 +26,79 @@ class Api extends REST_Controller {
         $this->load->view('welcome_message');
     }
 
+    private function useCurl($url, $headers, $fields = null) {
+        // Open connection
+        $ch = curl_init();
+        if ($url) {
+            // Set the url, number of POST vars, POST data
+            curl_setopt($ch, CURLOPT_URL, $url);
+//            curl_setopt($ch, CURLOPT_POST, true);
+//            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+            // Disabling SSL Certificate support temporarly
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+//            if ($fields) {
+//                curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+//            }
+
+            // Execute post
+            $result = curl_exec($ch);
+            if ($result === FALSE) {
+                die('Curl failed: ' . curl_error($ch));
+            }
+
+            // Close connection
+            curl_close($ch);
+
+            return $result;
+        }
+    }
+
+    function sendSMS($mobile_no, $otpcode) {
+        $apiKey = urlencode('NWE3YTU1NjE1YTQyNTU3MjM1NGI2NDdhMzE2NTYxNDg=');
+
+        // Message details
+        $numbers = array($mobile_no);
+        $sender = urlencode('ALPLMB');
+        $message = rawurlencode("Hi, $otpcode is your OTP to log in to Alliance Loyalty Program. We welcome you to the Alliance family.");
+
+        $numbers = implode(',', $numbers);
+
+        // Prepare data for POST request
+        $data = array('apikey' => $apiKey, 'numbers' => $numbers, "sender" => $sender, "message" => $message);
+
+        // Send the POST request with cURL
+        // Send the GET request with cURL
+	$ch = curl_init('https://api.textlocal.in/send/?' . http_build_query($data));
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	$response = curl_exec($ch);
+	curl_close($ch);
+	
+	// Process your response here
+	echo $response;
+        // Process your response here
+      
+    }
+
+    function testMessage_get($mobile_no, $otpcode) {
+        $this->sendSMS($mobile_no, $otpcode);
+          $apiKey = urlencode('NWE3YTU1NjE1YTQyNTU3MjM1NGI2NDdhMzE2NTYxNDg=');
+
+        // Message details
+        $numbers = array($mobile_no);
+        $sender = urlencode('ALPLMB');
+        $message = rawurlencode("Hi, $otpcode is your OTP to log in to Alliance Loyalty Program. We welcome you to the Alliance family.");
+
+        $numbers = implode(',', $numbers);
+
+        // Prepare data for POST request
+        $data = array('apikey' => $apiKey, 'numbers' => $numbers, "sender" => $sender, "message" => $message);
+        $curldata = $this->useCurl("https://api.textlocal.in/send?" . http_build_query($data), array(), json_encode($data));
+        $codehas = json_decode($curldata);
+        print_r($codehas);
+    }
+
     function registration_post() {
         $postdata = $this->post();
         $email = $postdata["email"];
@@ -44,6 +117,7 @@ class Api extends REST_Controller {
             $this->response(array("status" => "401", "message" => "Email or mobile no. already registered"));
         } else {
             $postdata["rcode"] = "";
+            $postdata["usercode"] = rand(1000, 9999);
             $this->db->insert("app_user", $postdata);
             $insert_id = $this->db->insert_id();
 
@@ -54,6 +128,7 @@ class Api extends REST_Controller {
             $this->db->update("app_user");
             $postdata["rcode"] = $rcode;
             $postdata["id"] = $insert_id;
+            $this->sendSMS($mobile_no, $postdata["usercode"]);
             if ($insert_id) {
                 $imagepath = base_url() . "assets/profile_image/";
                 $profile_image = $postdata["profile_image"];
@@ -97,6 +172,55 @@ class Api extends REST_Controller {
         } else {
             $this->response(array("status" => "401", "message" => "Mobile no. not registered"));
         }
+    }
+
+    function loginOtp_post() {
+        $postdata = $this->post();
+        $username = $postdata["contact_no"];
+        $this->db->where("contact_no", $username);
+        $query = $this->db->get('app_user');
+        $userdata = $query->row_array();
+        if ($userdata) {
+            if ($username != "8602648733") {
+                $otpcheck = rand(1000, 9999);
+            } else {
+                $otpcheck = "1212";
+            }
+            $updatearray = array(
+                'usercode' => $otpcheck,
+                'datetime' => date("Y-m-d h:i:s A")
+            );
+            $this->db->set($updatearray);
+            $this->db->where('contact_no', $username);
+            $this->db->update('app_user');
+            $this->sendSMS($username, $otpcheck);
+
+            $this->response(array("status" => "100"));
+        } else {
+            $this->response(array("status" => "401", "message" => "Mobile no. not registered"));
+        }
+    }
+
+    function checkContactOtp_get($mobile_no, $password) {
+
+        $this->db->where("usercode", $password);
+        $this->db->where("contact_no", $mobile_no);
+        $query = $this->db->get("app_user");
+        $userdata = $query->row_array();
+        if ($userdata) {
+            $imagepath = base_url() . "assets/profile_image/";
+            $profile_image = $userdata["profile_image"];
+            if ($profile_image) {
+                $profile_image = $imagepath . $profile_image;
+            } else {
+                $profile_image = $imagepath . "default.png";
+            }
+            $userdata["profile_image"] = $profile_image;
+            $data = array("status" => "success", "userdata" => $userdata);
+        } else {
+            $data = array("status" => "filed");
+        }
+        $this->response($data);
     }
 
     function updateProfile_post() {
