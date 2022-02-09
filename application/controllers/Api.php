@@ -56,34 +56,7 @@ class Api extends REST_Controller {
     }
 
     function sendSMS($mobile_no, $otpcode) {
-        $apiKey = urlencode('NWE3YTU1NjE1YTQyNTU3MjM1NGI2NDdhMzE2NTYxNDg=');
-
-        // Message details
-        $numbers = array($mobile_no);
-        $sender = urlencode('ALPLMB');
-        $message = rawurlencode("Hi, $otpcode is your OTP to log in to Alliance Loyalty Program. We welcome you to the Alliance family.");
-
-        $numbers = implode(',', $numbers);
-
-        // Prepare data for POST request
-        $data = array('apikey' => $apiKey, 'numbers' => $numbers, "sender" => $sender, "message" => $message);
-
-        // Send the POST request with cURL
-        // Send the GET request with cURL
-	$ch = curl_init('https://api.textlocal.in/send/?' . http_build_query($data));
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	$response = curl_exec($ch);
-	curl_close($ch);
-	
-	// Process your response here
-	echo $response;
-        // Process your response here
-      
-    }
-
-    function testMessage_get($mobile_no, $otpcode) {
-        $this->sendSMS($mobile_no, $otpcode);
-          $apiKey = urlencode('NWE3YTU1NjE1YTQyNTU3MjM1NGI2NDdhMzE2NTYxNDg=');
+        $apiKey = ('NjYzMzU5NTA2MjM2MzI2ZjY0NGY3OTU2MzQ3NzRhNWE=');
 
         // Message details
         $numbers = array($mobile_no);
@@ -96,7 +69,25 @@ class Api extends REST_Controller {
         $data = array('apikey' => $apiKey, 'numbers' => $numbers, "sender" => $sender, "message" => $message);
         $curldata = $this->useCurl("https://api.textlocal.in/send?" . http_build_query($data), array(), json_encode($data));
         $codehas = json_decode($curldata);
-        print_r($codehas);
+      
+    }
+
+    function testMessage_get($mobile_no, $otpcode) {
+//        $this->sendSMS($mobile_no, $otpcode);
+          $apiKey = ('NjYzMzU5NTA2MjM2MzI2ZjY0NGY3OTU2MzQ3NzRhNWE=');
+
+        // Message details
+        $numbers = array($mobile_no);
+        $sender = urlencode('ALPLMB');
+        $message = rawurlencode("Hi, $otpcode is your OTP to log in to Alliance Loyalty Program. We welcome you to the Alliance family.");
+
+        $numbers = implode(',', $numbers);
+
+        // Prepare data for POST request
+        $data = array('apikey' => $apiKey, 'numbers' => $numbers, "sender" => $sender, "message" => $message);
+        $curldata = $this->useCurl("https://api.textlocal.in/send?" . http_build_query($data), array(), json_encode($data));
+        $codehas = json_decode($curldata);
+//        print_r($codehas);
     }
 
     function registration_post() {
