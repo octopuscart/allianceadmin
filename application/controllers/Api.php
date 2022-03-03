@@ -92,7 +92,7 @@ class Api extends REST_Controller {
         }
 
         if ($userdata) {
-            $this->response(array("status" => "401", "message" => "Email or mobile no. already registered"));
+            $this->response(array("status" => "401", "message" => "Mobile no. already registered"));
         } else {
             $postdata["rcode"] = "";
             $postdata["usercode"] = rand(1000, 9999);
