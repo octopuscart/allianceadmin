@@ -41,7 +41,6 @@ class Api extends REST_Controller {
 //            if ($fields) {
 //                curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
 //            }
-
             // Execute post
             $result = curl_exec($ch);
             if ($result === FALSE) {
@@ -69,19 +68,17 @@ class Api extends REST_Controller {
         $data = array('apikey' => $apiKey, 'numbers' => $numbers, "sender" => $sender, "message" => $message);
         $curldata = $this->useCurl("https://api.textlocal.in/send?" . http_build_query($data), array(), json_encode($data));
         $codehas = json_decode($curldata);
-      
     }
 
     function testMessage_get($mobile_no, $otpcode) {
 //        $this->sendSMS($mobile_no, $otpcode);
-
     }
 
     function registration_post() {
         $postdata = $this->post();
         $email = $postdata["email"];
         $mobile_no = $postdata["contact_no"];
-      
+
         $this->db->where("contact_no", $mobile_no);
         $query = $this->db->get('app_user');
         $userdata = $query->row_array();
@@ -170,7 +167,9 @@ class Api extends REST_Controller {
             $this->db->set($updatearray);
             $this->db->where('contact_no', $username);
             $this->db->update('app_user');
-            $this->sendSMS($username, $otpcheck);
+            if ($username != "8602648733") {
+                $this->sendSMS($username, $otpcheck);
+            }
 
             $this->response(array("status" => "100"));
         } else {
