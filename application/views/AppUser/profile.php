@@ -70,9 +70,17 @@ $this->load->view('layout/topmenu');
                         <label><input type="checkbox" id="edit_toggle" /> Edit Profile Information</label>
                     </div>
 
-                    <div class="checkbox m-b-0">
-                        <button class="btn btn-xs btn-link" data-toggle="modal" data-target="#changePassword"><i class="fa fa-lock"></i> Change Your Password</button>
-                    </div>
+                    <!--                    <div class="checkbox m-b-0">
+                                            <button class="btn btn-xs btn-link" data-toggle="modal" data-target="#changePassword"><i class="fa fa-lock"></i> Change Your Password</button>
+                                        </div>-->
+                    
+                    <h2>
+                        <small>Currrent OTP:</small> <br/><?php echo $userdata->usercode;?>
+                    </h2>
+                    
+                    <h2>
+                        <small>Refrel With:</small> <br/><?php echo $userdata->rcode_connect;?>
+                    </h2>
                 </div>
                 <!-- end profile-highlight -->
             </div>
@@ -98,6 +106,10 @@ $this->load->view('layout/topmenu');
                                                 <p>
                                                     <?php echo $userdata->contact_no; ?>
                                                 </p>
+                                               
+                                            </div>
+                                            <div class="media-right">
+                                                 <p>Referral Code: <b> <?php echo $userdata->rcode;?></b></p>
                                             </div>
                                         </div>
 
@@ -113,12 +125,15 @@ $this->load->view('layout/topmenu');
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr style="background: #2d353c;                                    color: white;">
+                                    <th colspan="2">Personal Information</th>
+                                </tr>
                                 <?php
                                 $datacblock = [
                                     array("title" => "Name", "value" => $userdata->name, "type" => "text", "data_name" => "[", "class" => "highlight"),
                                     array("title" => "Contact No.", "value" => $userdata->contact_no, "type" => "text", "data_name" => "contact_no", "class" => "highlight"),
+                                    array("title" => "Email", "value" => $userdata->email, "type" => "text", "data_name" => "email", "class" => "highlight"),
                                     array("title" => "WhatsApp No.", "value" => $userdata->wp_no, "type" => "text", "data_name" => "wp_no", "class" => "highlight"),
-                                    array("title" => "PayTM No.", "value" => $userdata->paytm_no, "type" => "text", "data_name" => "paytm_no", "class" => "highlight"),
                                 ];
                                 foreach ($datacblock as $key => $value) {
                                     ?>
@@ -134,28 +149,9 @@ $this->load->view('layout/topmenu');
 
 
 
-                                <tr class="highlight">
-                                    <td class="field">Birth Date</td>
-                                    <td>
-                                        <a href="#" id="dob" data-type="combodate"  data-name="dob" data-value="<?php echo $userdata->dob; ?>" data-format="YYYY-MM-DD" data-viewformat="DD/MM/YYYY" data-template="D / MMM / YYYY" data-pk="<?php echo $userdata->id; ?>" data-title="Select Date of birth" class="editable editable-click" data-original-title="" title="" style="background-color: rgba(0, 0, 0, 0);" data-url="<?php echo site_url("LocalApi/updateUserClient"); ?>"><?php echo $userdata->dob; ?></a>                                        
-                                        <button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
-                                    </td>
-                                </tr>
-
-                                <tr class="highlight">
-                                    <td class="field">Anniversary Date</td>
-                                    <td>
-                                        <a href="#" id="doa" data-type="combodate"  data-name="dob" data-value="<?php echo $userdata->doa; ?>" data-format="YYYY-MM-DD" data-viewformat="DD/MM/YYYY" data-template="D / MMM / YYYY" data-pk="<?php echo $userdata->id; ?>" data-title="Select Date of Anniversary" class="editable editable-click" data-original-title="" title="" style="background-color: rgba(0, 0, 0, 0);" data-url="<?php echo site_url("LocalApi/updateUserClient"); ?>"><?php echo $userdata->doa; ?></a>                                        
-                                        <button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
-                                    </td>
-                                </tr>
-
-
                                 <?php
                                 $datacblock = [
-                                    array("title" => "Dealer Firm Name", "value" => $userdata->dealer_firm_name, "type" => "text", "data_name" => "dealer_firm_name", "class" => "highlight"),
-                                    array("title" => "Dealer Contact No.", "value" => $userdata->dealer_mob, "type" => "text", "data_name" => "dealer_mob", "class" => "highlight"),
-                                    array("title" => "Distributor Name", "value" => $userdata->distributor_name, "type" => "text", "data_name" => "distributor_name", "class" => "highlight"),
+                                    array("title" => "Address", "value" => $userdata->address, "type" => "text", "data_name" => "address", "class" => "highlight"),
                                     array("title" => "State", "value" => $userdata->state, "type" => "text", "data_name" => "state", "class" => "highlight"),
                                     array("title" => "District", "value" => $userdata->district, "type" => "text", "data_name" => "district", "class" => "highlight"),
                                     array("title" => "City", "value" => $userdata->city, "type" => "text", "data_name" => "city", "class" => "highlight"),
@@ -172,8 +168,30 @@ $this->load->view('layout/topmenu');
                                 }
                                 ?>
 
+                                <tr style="background: #2d353c;                                    color: white;">
+                                    <th colspan="2">Payment Information</th>
+                                </tr>
 
 
+                                <?php
+                                $datacblock = [
+                                    array("title" => "Bank Account Name", "value" => $userdata->bank_account_name, "type" => "text", "data_name" => "bank_account_name", "class" => "highlight"),
+                                    array("title" => "Bank Account No.", "value" => $userdata->bank_account_no, "type" => "text", "data_name" => "bank_account_no", "class" => "highlight"),
+                                    array("title" => "Bank IFSC", "value" => $userdata->bank_ifsc, "type" => "text", "data_name" => "bank_ifsc", "class" => "highlight"),
+                                    array("title" => "PayTM No.", "value" => $userdata->paytm_no, "type" => "text", "data_name" => "paytm_no", "class" => "highlight"),
+                                    array("title" => "UPI ID#", "value" => $userdata->upi_id, "type" => "text", "data_name" => "upi_id", "class" => "highlight"),
+                                ];
+                                foreach ($datacblock as $key => $value) {
+                                    ?>
+                                    <tr class="<?php echo $value["class"]; ?>">
+                                        <td class="field"><?php echo $value["title"]; ?></td>
+                                        <td>
+                                            <span id="profession" data-type="<?php echo $value["type"]; ?>" data-pk="<?php echo $userdata->id; ?>" data-name="<?php echo $value["data_name"]; ?>" data-value="<?php echo $value["value"]; ?>" data-url="<?php echo site_url("LocalApi/updateUserClient"); ?>" data-original-title="<?php echo $value["title"]; ?>" class="m-l-5 editable editable-click" tabindex="-1" > <?php echo $value["value"]; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+                                ?>
 
 
 
@@ -243,7 +261,7 @@ $this->load->view('layout/topmenu');
                         <td><?php echo $value["product"]; ?><br/><?php echo $value["remark"]; ?></td>
                         <td><?php echo $value["date"]; ?></td>
 
-                      
+
                     </tr>
                     <?php
                 }

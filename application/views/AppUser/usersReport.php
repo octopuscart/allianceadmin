@@ -29,7 +29,9 @@ $this->load->view('layout/topmenu');
     }
 </style>
 <!-- Main content -->
-
+<!-- ================== BEGIN PAGE LEVEL STYLE ================== -->
+<link href="<?php echo base_url(); ?>assets/plugins/DataTables/css/data-table.css" rel="stylesheet" />
+<!-- ================== END PAGE LEVEL STYLE ================== -->
 
 
 <section class="content">
@@ -39,7 +41,7 @@ $this->load->view('layout/topmenu');
             <div class="panel-heading">
                 <h3 class="panel-title">
                     Plumbers Reports
-                   
+
                 </h3>
                 <div class="panel-tools">
 
@@ -54,8 +56,8 @@ $this->load->view('layout/topmenu');
                 <div class="tab-content">
 
 
-                    <div class="" style="padding:20px">
-                        <table id="tableDataOrder" class="table table-bordered smallfonttable">
+                    <div class="row" style="padding:20px">
+                        <table id="tableData" class="table table-bordered smallfonttable">
                             <thead>
                                 <tr>
                                     <th style="width: 20px;">S.N.</th>
@@ -64,10 +66,10 @@ $this->load->view('layout/topmenu');
 
                                     <th style="width: 150px;">Contact No.</th>
                                     <th style="width: 100px;">Address </th>
-                                    <th style="width: 150px;">Life Events </th>
+                                    <th style="width: 150px;">Referral  Code </th>
 
-                                    <th style="width: 100px;">Dealer</th>
-                                    <th style="width: 75px;">Distributor</th>
+                                    <th style="width: 100px;">Currnt OTP</th>
+                                     <th style="width: 100px;"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -131,14 +133,7 @@ $this->load->view('layout/topmenu');
                                                             <?php echo $value->wp_no; ?>
                                                         </td>
                                                     </tr>
-                                                    <tr >
-                                                        <td >
-                                                            <img src="<?php echo base_url(); ?>assets/emoji/paytm.png" style="height:20px" />
-                                                        </td>
-                                                        <td>
-                                                            <?php echo $value->paytm_no; ?>
-                                                        </td>
-                                                    </tr>
+
                                                 </table>
 
 
@@ -152,38 +147,22 @@ $this->load->view('layout/topmenu');
                                                 </span>
                                             </td>
                                             <td>
-                                                <table class="minitable">
-                                                    <tr>
-                                                        <td>
-                                                            <b>Birth Date</b><br/>
-                                                            <?php echo $value->dob; ?>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <b>Mrg. Anniversary</b><br/>
-                                                            <?php echo $value->doa; ?>
-                                                        </td>
-                                                    </tr>
-                                                </table>
 
+                                                <span class="">
+                                                    <?php echo $value->rcode; ?>
+                                                </span>
 
                                             </td>
                                             <td>
                                                 <span class="">
 
-                                                    <?php echo $value->dealer_firm_name; ?>
-                                                    <br/>
-                                                    <?php echo $value->dealer_mob; ?>
+                                                    <?php echo $value->usercode; ?>
+                                             
                                                 </span>
                                             </td>
 
 
-                                            <td>
-                                                <span class="">
-                                                    <?php echo $value->distributor_name; ?>
-                                                </span>
-                                            </td>
+                                          
 
                                             <td>
                                                 <a href="<?php echo site_url('AppUser/user_details/' . $value->id); ?>" class="btn btn-danger"><i class="fa fa-eye "></i> View</a>
@@ -208,17 +187,15 @@ $this->load->view('layout/topmenu');
 <!-- end col-6 -->
 </div>
 
-
+<script src="<?php echo base_url(); ?>assets/plugins/DataTables/js/jquery.dataTables.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/table-manage-default.demo.min.js"></script>
 <?php
 $this->load->view('layout/footer');
 ?> 
 <script>
     $(function () {
 
-        $('#tableDataOrder').DataTable({
-            language: {
-                "search": "Apply filter _INPUT_ to table"
-            }
+        $('#tableData').DataTable({
         })
     })
 

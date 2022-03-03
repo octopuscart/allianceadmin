@@ -82,6 +82,8 @@ $client_menu = array(
     "sub_menu" => array(
         "Print QR" => site_url("StockManagement/printQR"),
         "Print Reports" => site_url("StockManagement/orderlist"),
+        "Used QR Reports" => site_url("StockManagement/usedqr"),
+        "Unused QR Reports" => site_url("StockManagement/nousedqr"),
     ),
 );
 array_push($menu_control, $client_menu);

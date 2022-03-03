@@ -233,7 +233,7 @@ class StockManagement extends CI_Controller {
         $query2 = $this->db->query($query_limit);
         $productslist = $query2->result_array();
         foreach ($productslist as $key => $value) {
-            $value["edit"] = "<a href='".site_url("StockManagement/printQRConfirm/".$value["order_id"])."' class='btn btn-info'>View</a>";
+            $value["edit"] = "<a href='" . site_url("StockManagement/printQRConfirm/" . $value["order_id"]) . "' class='btn btn-info'>View</a>";
             array_push($orderlistfinal, $value);
         }
         $output = array(
@@ -249,6 +249,33 @@ class StockManagement extends CI_Controller {
     function orderlist() {
         $data = array();
         $this->load->view('StockManagement/orderlist', $data);
+    }
+
+    function usedqr() {
+        $querydata = "SELECT ps.dealer_order_id, ps.serial_no, ps.stock_date, dr.name as dealer, do.order_no, pd.title, pd.sku, pr.points, pr.date, pr.time,
+au.contact_no, au.name, au.id as user_id FROM product_stock as ps
+  join dealers as dr on dr.id  = ps.dealer_id
+  join dealer_order as do on do.id = ps.dealer_order_id
+  join products as pd on pd.id = ps.product_id
+ right Join product_rewards as pr on pr.serial_no = ps.serial_no
+ join app_user as au on  au.id = pr.plumber_id
+ group by pr.serial_no";
+        $query1 = $this->db->query($querydata);
+        $productslist = $query1->result_array();
+        $data["prouctlist"] = $productslist;
+        $this->load->view('StockManagement/usedqr', $data);
+    }
+
+    function nousedqr() {
+        $querydata = "SELECT ps.dealer_order_id, ps.serial_no, ps.stock_date, dr.name, do.order_no, pd.title, pd.sku FROM product_stock as ps
+ right join dealers as dr on dr.id  = ps.dealer_id
+ right join dealer_order as do on do.id = ps.dealer_order_id
+ RIGHT join products as pd on pd.id = ps.product_id
+  WHERE ps.serial_no  not in (select serial_no from product_rewards)";
+        $query1 = $this->db->query($querydata);
+        $productslist = $query1->result_array();
+        $data["prouctlist"] = $productslist;
+        $this->load->view('StockManagement/unusedqr', $data);
     }
 
 }

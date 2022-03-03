@@ -59,7 +59,8 @@ $this->load->view('layout/topmenu');
                             <thead>
                                 <tr>
                                     <th style="width: 20px;">S.N.</th>
-                                    <th >Name</th>
+                                    <th >Party Name</th>
+                                    <th >Proprietor Name</th>
                                     <th style="width: 150px;">Contact No.</th>
                                     <th style="width: 100px;">Email</th>
                                     <th style="width: 100px;">City</th>
@@ -78,9 +79,14 @@ $this->load->view('layout/topmenu');
                                             <td><?php echo $count; ?></td>
 
 
-                                             <td>
+                                            <td>
                                                 <span class="">
                                                     <?php echo $value->name; ?>
+                                                </span>
+                                            </td>
+<td>
+                                                <span class="">
+                                                    <?php echo $value->propitor_name; ?>
                                                 </span>
                                             </td>
 

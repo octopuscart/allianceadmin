@@ -84,7 +84,8 @@ $this->load->view('layout/topmenu');
                             <tbody>
                                 <?php
                                 $datacblock = [
-                                    array("title" => "Name", "value" => $userdata->name, "type" => "text", "data_name" => "[", "class" => "highlight"),
+                                    array("title" => "Party Name", "value" => $userdata->name, "type" => "text", "data_name" => "name", "class" => "highlight"),
+                                     array("title" => "Proprietor Name", "value" => $userdata->propitor_name, "type" => "text", "data_name" => "propitor_name", "class" => "highlight"),
                                     array("title" => "Contact No.", "value" => $userdata->contact_no, "type" => "text", "data_name" => "contact_no", "class" => "highlight"),
                                     array("title" => "Email", "value" => $userdata->email, "type" => "text", "data_name" => "email", "class" => "highlight"),
                           
