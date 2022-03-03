@@ -81,8 +81,8 @@ class Api extends REST_Controller {
         $postdata = $this->post();
         $email = $postdata["email"];
         $mobile_no = $postdata["contact_no"];
-        $this->db->where("email", $email);
-        $this->db->or_where("contact_no", $mobile_no);
+      
+        $this->db->where("contact_no", $mobile_no);
         $query = $this->db->get('app_user');
         $userdata = $query->row_array();
         $checkrcode = $postdata["rcode"];
@@ -129,8 +129,7 @@ class Api extends REST_Controller {
         $username = $postdata["contact_no"];
         $password = $postdata["password"];
         $this->db->where("password", $password);
-        $this->db->where("email", $username);
-        $this->db->or_where("contact_no", $username);
+        $this->db->where("contact_no", $username);
         $query = $this->db->get('app_user');
         $userdata = $query->row_array();
         if ($userdata) {
