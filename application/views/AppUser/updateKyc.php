@@ -72,7 +72,6 @@ $this->load->view('layout/topmenu');
                                     array("title" => "Name", "value" => $userdata->name, "type" => "text", "data_name" => "[", "class" => "highlight"),
                                     array("title" => "Contact No.", "value" => $userdata->contact_no, "type" => "text", "data_name" => "contact_no", "class" => "highlight"),
                                     array("title" => "WhatsApp No.", "value" => $userdata->wp_no, "type" => "text", "data_name" => "wp_no", "class" => "highlight"),
-                                    array("title" => "PayTM No.", "value" => $userdata->paytm_no, "type" => "text", "data_name" => "paytm_no", "class" => "highlight"),
                                 ];
                                 foreach ($datacblock as $key => $value) {
                                     ?>
@@ -88,26 +87,11 @@ $this->load->view('layout/topmenu');
 
 
 
-                                <tr class="highlight">
-                                    <td class="">Birth Date</td>
-                                    <td>
-                                        <?php echo $userdata->dob; ?>
-                                    </td>
-                                </tr>
-
-                                <tr class="highlight">
-                                    <td class="">Anniversary Date</td>
-                                    <td>
-                                        <?php echo $userdata->doa; ?>
-                                    </td>
-                                </tr>
+                              
 
 
                                 <?php
                                 $datacblock = [
-                                    array("title" => "Dealer Firm Name", "value" => $userdata->dealer_firm_name, "type" => "text", "data_name" => "dealer_firm_name", "class" => "highlight"),
-                                    array("title" => "Dealer Contact No.", "value" => $userdata->dealer_mob, "type" => "text", "data_name" => "dealer_mob", "class" => "highlight"),
-                                    array("title" => "Distributor Name", "value" => $userdata->distributor_name, "type" => "text", "data_name" => "distributor_name", "class" => "highlight"),
                                     array("title" => "State", "value" => $userdata->state, "type" => "text", "data_name" => "state", "class" => "highlight"),
                                     array("title" => "District", "value" => $userdata->district, "type" => "text", "data_name" => "district", "class" => "highlight"),
                                     array("title" => "City", "value" => $userdata->city, "type" => "text", "data_name" => "city", "class" => "highlight"),
