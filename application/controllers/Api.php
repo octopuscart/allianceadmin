@@ -10,7 +10,7 @@ class Api extends REST_Controller {
         $this->load->model('Product_model');
         $this->load->library('session');
         $this->checklogin = $this->session->userdata('logged_in');
-        $this->user_id = $this->session->userdata('logged_in')['login_id'];
+        $this->user_id = $this->checklogin ? $this->checklogin['login_id'] : 0;
 
         $query = $this->db->get('configuration_attr');
         $paymentattr = $query->result_array();
@@ -384,9 +384,7 @@ class Api extends REST_Controller {
 
         $returndata = $this->Product_model->getUserPoints($user_id);
 
-
         $paid_amount = $returndata["paid"] ? $returndata["paid"] : 0;
-
 
         $totalpoints = $returndata["totalremain"];
 
@@ -467,7 +465,6 @@ class Api extends REST_Controller {
 
         $filelocation = "assets/profile_image/";
         move_uploaded_file($_FILES["file"]['tmp_name'], $filelocation . $actfilname);
-
 
         $this->response(array("status" => "200"));
     }
