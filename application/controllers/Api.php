@@ -93,6 +93,11 @@ class Api extends REST_Controller {
         } else {
             $postdata["rcode"] = "";
             $postdata["usercode"] = rand(1000, 9999);
+            unset($postdata["dob"]);
+            unset($postdata["doa"]);
+            unset($postdata["dealer_firm_name"]);
+            unset($postdata["dealer_mob"]);
+             unset($postdata["distributor_name"]);
             $this->db->insert("app_user", $postdata);
             $insert_id = $this->db->insert_id();
 
