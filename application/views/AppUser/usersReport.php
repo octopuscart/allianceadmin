@@ -78,6 +78,7 @@ $this->load->view('layout/topmenu');
 
                                     $count = 1;
                                     foreach ($users as $key => $value) {
+                              
                                         ?>
                                         <tr>
                                             <td><?php echo $count; ?></td>
@@ -85,7 +86,7 @@ $this->load->view('layout/topmenu');
                                             <td>
 
 
-                                                <img src = '<?php echo base_url(); ?>assets/<?php echo $value->image ? "profile_image/" . $value->image : "emoji/user.png"; ?>' alt = "" class = "media-object rounded-corner" style = "    width: 30px;" />
+                                                <img src = '<?php echo base_url(); ?>assets/<?php echo $value->profile_image ? "profile_image/" . $value->profile_image : "emoji/user.png"; ?>' alt = "" class = "media-object rounded-corner" style = "    width: 30px;" />
 
 
 
