@@ -97,7 +97,7 @@ class Api extends REST_Controller {
             unset($postdata["doa"]);
             unset($postdata["dealer_firm_name"]);
             unset($postdata["dealer_mob"]);
-             unset($postdata["distributor_name"]);
+            unset($postdata["distributor_name"]);
             $this->db->insert("app_user", $postdata);
             $insert_id = $this->db->insert_id();
 
@@ -233,7 +233,26 @@ class Api extends REST_Controller {
 
     function getCardQr_get($stock_id) {
         $this->load->library('phpqr');
-        $this->phpqr->showcode($stock_id);
+        $filename = "assets/qrcodes/$stock_id.png";
+        $filetemplate = "assets/qrcodes/template.png";
+        $this->phpqr->createcode($stock_id, $filename);
+        $font_path1 = APPPATH . "../assets/fonts/ABeeZee-Regular.otf";
+        $dest = imagecreatefrompng($filetemplate);
+        $src = imagecreatefrompng($filename);
+        $white = imagecolorallocate($dest, 0, 0, 0);
+// Copy and merge
+
+        imagecopymerge($dest, $src, 400, 273, 0, 0, 500, 500, 75);
+        imagettftext($dest, 25, 0, 450, 770, $white, $font_path1, "$stock_id");
+
+// Output and free from memory
+        header('Content-Type: image/png');
+        imagepng($dest, $filename);
+        imagepng($dest);
+
+
+        imagedestroy($dest);
+        imagedestroy($src);
     }
 
     function getProductBySerialNo_get($serial_no, $plumber_id) {

@@ -13,6 +13,7 @@ class StockManagement extends CI_Controller {
         $this->load->model('User_model');
         $this->load->library('session');
         $this->load->model('Product_model');
+        $this->load->model('Util_model');
         $this->user_id = $this->session->userdata('logged_in')['login_id'];
         $this->user_type = $this->session->logged_in['user_type'];
         //stock
@@ -98,7 +99,6 @@ class StockManagement extends CI_Controller {
         $data["dealer_order"] = $dealer_order;
         $data["order_products"] = $order_products;
 
-
         if (isset($_POST["dealer_order"])) {
             $dealer_id = $this->input->post("dealer_id");
             $order_no = $this->input->post("order_no");
@@ -178,8 +178,6 @@ class StockManagement extends CI_Controller {
         $dealer = $query1->row_array();
         $data["dealer"] = $dealer;
 
-
-
         $this->db->where('dealer_order_id', $order_id);
         $query = $this->db->get('dealer_order_products');
 
@@ -196,15 +194,33 @@ class StockManagement extends CI_Controller {
         $query = $this->db->get('product_stock');
         $order_products = $query->result_array();
 
+        $listofstock = [];
+
         foreach ($order_products as $key => $value) {
             if (isset($order_product_temp[$value["product_id"]])) {
                 array_push($order_product_temp[$value["product_id"]], $value);
             } else {
                 $order_product_temp[$value["product_id"]] = [$value];
             }
+            array_push($listofstock, $value["serial_no"]);
         }
 
         $data["product_qr_list"] = $order_product_temp;
+        $zipfoldername = $dealer_order["order_no"]. "_".$dealer_order["id"] . ".zip";
+        $zipfilename = APPPATH . "../assets/zipfiles/$zipfoldername";
+        $data["checkfordownload"] = file_exists($zipfilename);
+        if (isset($_POST["createqrs"])) {
+            foreach ($listofstock as $key => $value) {
+                $this->Util_model->createQrImages($value);
+            }
+            $this->Util_model->createZipFolder($zipfoldername, $listofstock);
+            redirect("StockManagement/printQRConfirm/$order_id");
+        }
+        if (isset($_POST["downloadzip"])) {
+            $this->load->helper('download');
+            force_download($zipfilename, NULL);
+            redirect("StockManagement/printQRConfirm/$order_id");
+        }
         $this->load->view('StockManagement/qrprintconfirm', $data);
     }
 

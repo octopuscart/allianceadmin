@@ -56,6 +56,20 @@ $this->load->view('layout/topmenu');
                                     </table>
                                     <div class="" id="serialprint">
                                         <div class="well well-sm  col-md-12">
+                                            <div class="row">
+                                                <form action="" method="post" class="col-md-6">
+                                                    <button class="btn btn-inverse" type="submit" name="createqrs">Create QR</button>
+                                                </form>
+                                                <form action="" method="post"  class="col-md-6 text-right">
+                                                    <?php if ($checkfordownload) { ?>
+                                                        <button class="btn btn-inverse" type="submit" name="downloadzip">Download Now</button>
+                                                        <?php
+                                                    }else{
+                                                        echo "<h3>File not found, Please click on create button.</h3>";
+                                                    }
+                                                    ?>
+                                                </form>
+                                            </div>
                                         </div>
                                         <div id="serialqrid">
                                             <table id="tableData" class="table table-bordered ">
@@ -92,19 +106,16 @@ $this->load->view('layout/topmenu');
                                                                 echo $value["quantity"];
                                                                 ?>
                                                             </td>
-                                                            <td class="text-right">
-                                                                <button class="btn btn-inverse pull-right " onclick="printDiv('serialqrid<?php echo $value["product_id"];?>')"><i class="fa fa-print"></i> Print QR</button>
 
-                                                            </td> 
                                                         </tr>
                                                         <tr>
-                                                            <td  colspan="5">
-                                                                <div class="row" id="serialqrid<?php echo $value["product_id"];?>">
+                                                            <td  colspan="4">
+                                                                <div class="row" id="serialqrid<?php echo $value["product_id"]; ?>">
                                                                     <?php
                                                                     foreach ($product_qr_list[$value["product_id"]] as $pkey => $pvalue) {
                                                                         ?>
                                                                         <div style="width:25%;float:left">
-                                                                            <img src="<?php echo site_url("Api/getCardQr/" . $pvalue["serial_no"]); ?>" style="width: 100%">
+                                                                            <img src="<?php echo base_url() . "assets/qrcodes/" . $pvalue["serial_no"] . ".png"; ?>" style="width: 100%">
                                                                             <br/>
                                                                             <p style="text-align: center;">
                                                                                 <?php echo $pvalue["serial_no"]; ?>
@@ -163,20 +174,20 @@ $this->load->view('layout/topmenu');
 $this->load->view('layout/footer');
 ?> 
 <script>
-                                                            function printDiv(divName) {
-                                                                var DocumentContainer = document.getElementById(divName);
-                                                                var WindowObject = window.open('', "PrintWindow", "width=750,height=650,top=50,left=50,toolbars=no,scrollbars=yes,status=no,resizable=yes");
-                                                                WindowObject.document.writeln(DocumentContainer.innerHTML);
-                                                                WindowObject.document.close();
-                                                                WindowObject.focus();
-                                                                WindowObject.print();
+    function printDiv(divName) {
+        var DocumentContainer = document.getElementById(divName);
+        var WindowObject = window.open('', "PrintWindow", "width=750,height=650,top=50,left=50,toolbars=no,scrollbars=yes,status=no,resizable=yes");
+        WindowObject.document.writeln(DocumentContainer.innerHTML);
+        WindowObject.document.close();
+        WindowObject.focus();
+        WindowObject.print();
 
-                                                            }
+    }
 
-                                                            function viewQrcode(imageurl, serialno) {
-                                                                $("#qrcodeid").attr("src", imageurl);
-                                                                $("#serialnoid").html(serialno);
-                                                            }
+    function viewQrcode(imageurl, serialno) {
+        $("#qrcodeid").attr("src", imageurl);
+        $("#serialnoid").html(serialno);
+    }
 
 </script>
 
