@@ -208,6 +208,11 @@ class Api extends REST_Controller {
         $postdata = $this->post();
         $user_id = $postdata["id"];
         unset($postdata["id"]);
+        unset($postdata["dob"]);
+        unset($postdata["doa"]);
+        unset($postdata["dealer_firm_name"]);
+        unset($postdata["dealer_mob"]);
+        unset($postdata["distributor_name"]);
         $this->db->where("id", $user_id);
         $this->db->set($postdata);
         $this->db->update('app_user');
@@ -249,7 +254,6 @@ class Api extends REST_Controller {
         header('Content-Type: image/png');
         imagepng($dest, $filename);
         imagepng($dest);
-
 
         imagedestroy($dest);
         imagedestroy($src);
